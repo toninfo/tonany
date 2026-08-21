@@ -37,6 +37,7 @@
       "ta.banner.text": "open source · MIT · local-first TUI",
       "ta.hero.subtitle":
         "Local-first AI assistant in your terminal. Handle the moment — hand off the rest.",
+      "ta.hero.see": "See the TUI →",
       "ta.install.source": "From source",
       "ta.install.run": "Run TUI",
       "ta.install.win": "Windows",
@@ -220,6 +221,7 @@
       "ta.eyebrow": "CLI · TUI · 万能助理",
       "ta.banner.text": "开源 · MIT · 本地优先 TUI",
       "ta.hero.subtitle": "本地优先的终端 AI 助理。眼前事自己干，专活再交办。",
+      "ta.hero.see": "看看 TUI →",
       "ta.install.source": "源码安装",
       "ta.install.run": "启动 TUI",
       "ta.install.win": "Windows",
