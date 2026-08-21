@@ -473,6 +473,8 @@ interface PackageJson {
 	version?: string;
 	piConfig?: {
 		name?: string;
+		/** 终端标题等展示名；默认由 name 推导 */
+		title?: string;
 		configDir?: string;
 	};
 }
@@ -487,12 +489,14 @@ try {
 
 const piConfigName: string | undefined = pkg.piConfig?.name;
 export const PACKAGE_NAME: string = pkg.name || "@tonany/pi-coding-agent";
-export const APP_NAME: string = piConfigName || "pi";
-export const APP_TITLE: string = piConfigName ? APP_NAME : "π";
-export const CONFIG_DIR_NAME: string = pkg.piConfig?.configDir || ".pi";
+// TonAny 品牌默认；package.json piConfig 可覆盖
+export const APP_NAME: string = piConfigName || "tonany";
+export const APP_TITLE: string =
+	pkg.piConfig?.title || (APP_NAME === "tonany" ? "TonAny" : APP_NAME);
+export const CONFIG_DIR_NAME: string = pkg.piConfig?.configDir || ".tonany";
 export const VERSION: string = pkg.version || "0.0.0";
 
-// e.g., PI_CODING_AGENT_DIR or TAU_CODING_AGENT_DIR
+// e.g., TONANY_CODING_AGENT_DIR
 export const ENV_AGENT_DIR = `${APP_NAME.toUpperCase()}_CODING_AGENT_DIR`;
 export const ENV_SESSION_DIR = `${APP_NAME.toUpperCase()}_CODING_AGENT_SESSION_DIR`;
 
@@ -510,10 +514,10 @@ export function getShareViewerUrl(gistId: string): string {
 }
 
 // =============================================================================
-// User Config Paths (~/.pi/agent/*)
+// User Config Paths (~/.tonany/agent/*)
 // =============================================================================
 
-/** Get the agent config directory (e.g., ~/.pi/agent/) */
+/** Get the agent config directory (e.g., ~/.tonany/agent/) */
 export function getAgentDir(): string {
 	const envDir = process.env[ENV_AGENT_DIR];
 	if (envDir) {

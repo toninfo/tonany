@@ -1,41 +1,56 @@
-# tonany
+# TonAny
 
-基于 [Pi Agent Harness](https://github.com/earendil-works/pi) 源码快照的**独立定制仓库**。已切断与上游的 git / npm scope / 默认运行时回连关系，详见 [VENDOR_SNAPSHOT.md](VENDOR_SNAPSHOT.md)。
+本地优先的 **万能 AI 助理（TUI）**。基于 Pi agent harness 源码快照独立演进，属于 toninfo 产品线：
+
+| 产品 | 定位 |
+|------|------|
+| [ton](https://github.com/toninfo/ton) | 驱动 agent 做长程工程 |
+| [TonWorker](https://github.com/toninfo/tonworker) | AI 同事，主打办公 |
+| **TonAny**（本仓） | AI 助理，干眼前万事 |
+
+详见 [docs/PRODUCT_LINE.md](docs/PRODUCT_LINE.md) 与 [docs/ROADMAP.md](docs/ROADMAP.md)。上游快照说明见 [VENDOR_SNAPSHOT.md](VENDOR_SNAPSHOT.md)。
+
+## Quick Start
+
+```bash
+npm install --ignore-scripts
+npm run hydrate:model-data   # 首次需要
+npm run build:offline
+./tonany-test.sh             # 从源码跑；亦可 ./pi-test.sh
+```
+
+全局安装（构建后）：
+
+```bash
+npm install -g --ignore-scripts ./packages/coding-agent
+tonany
+```
+
+配置目录：`~/.tonany/agent/`；项目扩展：`.tonany/`。
 
 ## Packages
 
 | Package | Description |
 |---------|-------------|
-| **[@tonany/pi-coding-agent](packages/coding-agent)** | Interactive coding agent CLI |
-| **[@tonany/pi-agent-core](packages/agent)** | Agent runtime with tool calling and state management |
-| **[@tonany/pi-ai](packages/ai)** | Unified multi-provider LLM API |
-| **[@tonany/pi-tui](packages/tui)** | Terminal UI library with differential rendering |
-| **[@tonany/pi-telemetry](packages/telemetry)** | Vendor-neutral telemetry contracts |
-| **[@tonany/pi-protocol](packages/protocol)** | Client/server protocol types |
+| **[@tonany/pi-coding-agent](packages/coding-agent)** | TonAny TUI / CLI |
+| **[@tonany/pi-agent-core](packages/agent)** | Agent runtime |
+| **[@tonany/pi-ai](packages/ai)** | Multi-provider LLM API |
+| **[@tonany/pi-tui](packages/tui)** | Terminal UI |
+| **[@tonany/pi-telemetry](packages/telemetry)** | Telemetry contracts |
+| **[@tonany/pi-protocol](packages/protocol)** | Client/server protocol |
 | **[@tonany/pi-client](packages/client)** | Session client |
 | **[@tonany/pi-server](packages/server)** | Session server |
 
 ## Development
 
 ```bash
-npm install --ignore-scripts  # 安装依赖（跳过 lifecycle scripts）
-npm run build                 # 构建全部 packages
-npm run build:offline         # 使用已有 model data，不访问网络
+npm run build                 # 构建（会刷新 model data）
+npm run build:offline         # 离线构建
 npm run check                 # lint / format / typecheck
-./test.sh                     # 测试（无 API key 时跳过 LLM 相关用例）
-./pi-test.sh                  # 从源码运行 pi（任意目录可执行）
+./test.sh                     # 测试
+./tonany-test.sh --help
 ```
-
-## 与上游的差异（定制基线）
-
-- npm scope：`@tonany/*`
-- 默认不探测 `pi.dev` 版本、不上报安装遥测、不拉取上游模型目录
-- 自建端点（可选）：
-  - `PI_LATEST_VERSION_URL`
-  - `PI_REPORT_INSTALL_URL`
-  - `PI_MODEL_CATALOG_URL`
-  - `PI_SHARE_VIEWER_URL`
 
 ## License
 
-MIT。上游版权归 Mario Zechner；本仓库后续修改版权归 toninfo/tonany 贡献者。完整条款见 [LICENSE](LICENSE)。
+MIT。上游版权归 Mario Zechner；本仓库修改归 toninfo / TonAny 贡献者。见 [LICENSE](LICENSE)。

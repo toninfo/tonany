@@ -1,12 +1,15 @@
 {
 	"name": "@tonany/pi-coding-agent",
 	"version": "0.84.2",
-	"description": "Coding agent CLI with read, bash, edit, write tools and session management",
+	"description": "TonAny \u2014 universal AI assistant TUI (local-first)",
 	"type": "module",
 	"piConfig": {
-		"configDir": ".pi"
+		"name": "tonany",
+		"configDir": ".tonany",
+		"title": "TonAny"
 	},
 	"bin": {
+		"tonany": "dist/cli.js",
 		"pi": "dist/cli.js"
 	},
 	"main": "./dist/index.js",
