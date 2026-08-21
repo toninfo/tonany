@@ -1,12 +1,14 @@
 # TonAny
 
+> Docs: [简体中文总览](../../README.md) · [English overview](../../README.en.md) · [Quickstart](docs/quickstart.md) · [Windows](docs/windows.md)
+
 **TonAny** is a local-first universal AI assistant in the terminal. It belongs to the toninfo product line with [ton](https://github.com/toninfo/ton) (engineering orchestration) and [TonWorker](https://github.com/toninfo/tonworker) (office coworking).
 
 Extend TonAny with TypeScript [Extensions](#extensions), [Skills](#skills), [Prompt Templates](#prompt-templates), and [Themes](#themes). Ship those as packages under `.tonany/` or npm/git installs.
 
 TonAny runs in four modes: interactive TUI, print/JSON, RPC for process integration, and an SDK for embedding.
 
-See also: [Quickstart](docs/quickstart.md) · [Windows](docs/windows.md) · [Product line](../../docs/PRODUCT_LINE.md) · [Roadmap](../../docs/ROADMAP.md)
+See also: [Product line](../../docs/PRODUCT_LINE.md) · [Roadmap](../../docs/ROADMAP.md)
 
 ## Table of Contents
 

@@ -10,9 +10,11 @@
 
 [Product site](extras/web/) · [Issues](https://github.com/toninfo/tonany/issues) · [Releases](https://github.com/toninfo/tonany/releases)
 
-**Local-first universal AI assistant (TUI).** TonAny lives in your terminal and aims for **finished work**, not just chat: read files, edit code, run commands, remember preferences — and hand off to sibling products when the job is long engineering or office delivery.
+**Local-first universal AI assistant.** TonAny lives in your terminal and delivers **finished work**, not just chat: tidy folders, edit code, run commands, remember preferences — and hand off to sibling products when the job is long engineering or office delivery.
 
-Part of the toninfo product line:
+It runs on your machine and does not lock you into a model: bring API keys for Anthropic, OpenAI, Google, and others, or point at a local-compatible endpoint. No upstream phone-home by default; data leaves your machine only through the models *you* choose.
+
+Part of the [toninfo](https://github.com/toninfo) product line:
 
 | Product | Role | Shape |
 |---------|------|-------|
@@ -20,22 +22,53 @@ Part of the toninfo product line:
 | [TonWorker](https://github.com/toninfo/tonworker) | AI coworker for office deliverables | Desktop app |
 | **TonAny** (this repo) | AI assistant for whatever is in front of you | TUI / CLI |
 
-See [docs/PRODUCT_LINE.md](docs/PRODUCT_LINE.md), [docs/ROADMAP.md](docs/ROADMAP.md), and [VENDOR_SNAPSHOT.md](VENDOR_SNAPSHOT.md) for lineage from the Pi harness snapshot.
+More: [product line](docs/PRODUCT_LINE.md) · [roadmap](docs/ROADMAP.md) · [vendor snapshot](VENDOR_SNAPSHOT.md)
 
-## Quick start
+## How it works
+
+1. Start TonAny in a project directory and describe the outcome you want.
+2. It uses `read` / `write` / `edit` / `bash` (plus skills) to get it done locally.
+3. For cross-session preferences, use `/skill:memory` (local markdown — no vector DB).
+4. When the job becomes long engineering or office delivery, `/skill:handoff` drafts a `TonHandOff` brief for [ton](https://github.com/toninfo/ton) or [TonWorker](https://github.com/toninfo/tonworker).
+
+```text
+┌──────────────────────────────────────────────┐
+│                 TonAny TUI                   │  interaction · sessions · extensions
+├──────────────────────────────────────────────┤
+│     agent loop (@tonany/pi-coding-agent)     │  tools · skills · trust
+├──────────────┬───────────────┬───────────────┤
+│  local files │  your model   │  handoff brief│
+│  & terminal  │  any provider │  → ton / TW   │
+└──────────────┴───────────────┴───────────────┘
+```
+
+## What it can do
+
+- **Handle the moment** — read/edit files, run commands, explain a repo, tidy a workspace.
+- **Stay extensible** — TypeScript Extensions, Skills, Prompt Templates, Themes under `.tonany/`.
+- **Light memory** — `/skill:memory` writes preferences to `~/.tonany/agent/memory/`.
+- **Product-line handoff** — `/skill:handoff` produces a brief; it does not pretend to remote-launch siblings.
+- **Four modes** — interactive TUI, print/JSON, RPC, and SDK embedding.
+
+## Bring your own model
+
+Model access is yours: `/login` for subscriptions, or API keys via env / `auth.json`. Built-in multi-provider catalogs (Anthropic, OpenAI, Gemini, DeepSeek, OpenRouter, Ollama-compatible, and more). See [packages/coding-agent/docs/providers.md](packages/coding-agent/docs/providers.md).
+
+## Run from source
 
 Requires **Node.js ≥ 22.19**.
 
 ```bash
 git clone https://github.com/toninfo/tonany.git
 cd tonany
+
 npm install --ignore-scripts
-npm run hydrate:model-data   # first time: hydrate model catalogs
+npm run hydrate:model-data   # first time: hydrate provider model data
 npm run build:offline
-./tonany-test.sh             # Windows: .\tonany-test.ps1
+./tonany-test.sh             # Windows: .\tonany-test.ps1 or .\tonany-test.bat
 ```
 
-Global install after build:
+After build you can also:
 
 ```bash
 npm install -g --ignore-scripts ./packages/coding-agent
@@ -43,45 +76,41 @@ tonany
 # `pi` remains an alias
 ```
 
-Config: `~/.tonany/agent/`. Project extensions/skills: `.tonany/`. Windows notes: [packages/coding-agent/docs/windows.md](packages/coding-agent/docs/windows.md).
+| Path | Purpose |
+|------|---------|
+| `~/.tonany/agent/` | Global config, credentials, sessions, memory |
+| `.tonany/` | Project extensions / skills / prompts |
+| `TONANY_CODING_AGENT_DIR` | Override config directory |
 
-## Auth
+Windows: [packages/coding-agent/docs/windows.md](packages/coding-agent/docs/windows.md) · Quickstart: [packages/coding-agent/docs/quickstart.md](packages/coding-agent/docs/quickstart.md)
+
+### Auth examples
 
 ```bash
-# Subscription
 tonany
 /login
 
-# Or API key
+# or
 export ANTHROPIC_API_KEY=sk-ant-...
 tonany
 ```
 
-## Skills & handoff
+## Repository layout
 
-Default tools: `read` / `write` / `edit` / `bash`. Built-in skills:
+| Directory | Contents |
+|-----------|----------|
+| `packages/coding-agent/` | TonAny CLI / TUI, skills, sessions |
+| `packages/agent/` | Agent runtime |
+| `packages/ai/` | Multi-provider LLM API |
+| `packages/tui/` | Terminal UI |
+| `packages/{protocol,client,server}/` | Session protocol and services |
+| `extras/web/` | TON.REN product site (TON / TonWorker / TonAny) |
+| `docs/` | Product line and roadmap |
+| `.tonany/` | Project-level skills / prompts for this repo |
 
-```text
-/skill:memory    # local markdown preferences
-/skill:handoff   # draft TonHandOff brief → ton / TonWorker
-```
+## Built on the Pi harness
 
-- Short local tasks → **TonAny**
-- Long engineering loops → **ton**
-- Office connectors / deliverables → **TonWorker**
-
-## Packages
-
-| Package | Description |
-|---------|-------------|
-| [@tonany/pi-coding-agent](packages/coding-agent) | TonAny TUI / CLI |
-| [@tonany/pi-agent-core](packages/agent) | Agent runtime |
-| [@tonany/pi-ai](packages/ai) | Multi-provider LLM API |
-| [@tonany/pi-tui](packages/tui) | Terminal UI |
-| [@tonany/pi-telemetry](packages/telemetry) | Telemetry contracts |
-| [@tonany/pi-protocol](packages/protocol) | Protocol types |
-| [@tonany/pi-client](packages/client) | Session client |
-| [@tonany/pi-server](packages/server) | Session server |
+TonAny’s agent core comes from an open-source [Pi](https://github.com/earendil-works/pi) source snapshot — detached from upstream git and default phone-home, then rebranded. Details: [VENDOR_SNAPSHOT.md](VENDOR_SNAPSHOT.md).
 
 ## Development
 
@@ -89,18 +118,14 @@ Default tools: `read` / `write` / `edit` / `bash`. Built-in skills:
 npm run build:offline
 npm run check
 ./test.sh
-./tonany-test.sh --help
+cd extras/web && python3 -m http.server 8080   # product site
 ```
 
-Preview the product site:
-
-```bash
-cd extras/web && python3 -m http.server 8080
-```
+See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 
 ## Privacy
 
-No upstream `pi.dev` phone-home by default. Optional self-hosted endpoints are documented in `docs/ROADMAP.md`.
+Local-first: sessions, settings, memory, and keys stay on your machine. Upstream version checks and install telemetry are off by default; optional self-hosted endpoints are documented in the roadmap.
 
 ## License
 
