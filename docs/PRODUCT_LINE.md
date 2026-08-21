@@ -23,6 +23,10 @@ TonAny 内置 `/skill:handoff`：判断该自己干还是交给 ton / TonWorker�
 - TonAny **不做** TonWorker 那套办公连接器首发。
 - 专活用交办协议转给 ton / TonWorker。
 
+## 产品站
+
+门户与三产品页在 [`extras/web/`](../extras/web/)（TON.REN 风格，品牌红）。同步回 `toninfo/ton` 的 `extras/web` 需 ton 仓写权限。
+
 ## 用户心智
 
 ```text
