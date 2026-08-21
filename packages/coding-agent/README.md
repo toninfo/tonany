@@ -648,7 +648,7 @@ pi --thinking high "Solve this complex problem"
 |----------|-------------|
 | `AI_AGENT` | Set to `pi` by the CLI and RPC entry points so generic tooling can attribute child processes to Pi |
 | `PI_CODING_AGENT` | Set to `true` by the CLI and RPC entry points so child processes can detect that they run inside Pi |
-| `TONANY_CODING_AGENT_DIR` | Override config directory (default: `~/.tonany/agent`); also accepts legacy `PI_CODING_AGENT_DIR` only if code paths still read it via `ENV_AGENT_DIR` |
+| `TONANY_CODING_AGENT_DIR` | Override config directory (default: `~/.tonany/agent`) |
 | `TONANY_CODING_AGENT_SESSION_DIR` | Override session storage directory (overridden by `--session-dir`) |
 | `PI_PACKAGE_DIR` | Override package directory (useful for Nix/Guix where store paths tokenize poorly) |
 | `PI_OFFLINE` | Disable startup network operations |
