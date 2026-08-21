@@ -1,5 +1,5 @@
 import { Container, getKeybindings, Spacer, Text } from "@tonany/pi-tui";
-import { APP_NAME } from "../../../config.ts";
+import { APP_NAME, APP_TITLE } from "../../../config.ts";
 import { type TerminalTheme, theme } from "../theme/theme.ts";
 import { DynamicBorder } from "./dynamic-border.ts";
 import { keyHint, rawKeyHint } from "./keybinding-hints.ts";
@@ -22,16 +22,18 @@ const THEME_OPTIONS: Array<{ value: TerminalTheme; label: string }> = [
 ];
 
 const ANALYTICS_OPTIONS: Array<{ value: boolean; label: string }> = [
+	{ value: false, label: "Don't share (recommended)" },
 	{ value: true, label: "Share anonymous usage data" },
-	{ value: false, label: "Don't share" },
 ];
 
-const SETUP_LOGO_LINES = ["██████", "██  ██", "████  ██", "██    ██"];
+// TonAny 简易字标（首次启动）
+const SETUP_LOGO_LINES = ["████████", "   ██   ", "   ██   ", "   ██   "];
 
 /** First-time setup dialog: theme choice and analytics opt-in. */
 export class FirstTimeSetupComponent extends Container {
 	private step: "theme" | "analytics" = "theme";
 	private themeIndex: number;
+	// tonany：默认不分享
 	private analyticsIndex = 0;
 	private readonly options: FirstTimeSetupOptions;
 
@@ -53,7 +55,18 @@ export class FirstTimeSetupComponent extends Container {
 		this.addChild(new Text(theme.fg("accent", SETUP_LOGO_LINES.join("\n")), 1, 0));
 		this.addChild(new Spacer(1));
 		this.addChild(
-			new Text(theme.fg("accent", theme.bold(`Welcome to ${APP_NAME}, the minimal coding agent.`)), 1, 0),
+			new Text(
+				theme.fg("accent", theme.bold(`Welcome to ${APP_TITLE}.`)),
+				1,
+				0,
+			),
+		);
+		this.addChild(
+			new Text(
+				theme.fg("muted", `Local-first AI assistant (${APP_NAME}). Get things done in this TUI.`),
+				1,
+				0,
+			),
 		);
 		this.addChild(new Spacer(1));
 
@@ -66,12 +79,12 @@ export class FirstTimeSetupComponent extends Container {
 				this.themeIndex,
 			);
 		} else {
-			this.addChild(new Text(theme.fg("text", "Opt-in to anonymous usage data sharing?"), 1, 0));
+			this.addChild(new Text(theme.fg("text", "Anonymous usage data?"), 1, 0));
 			this.addChild(
 				new Text(
 					theme.fg(
 						"muted",
-						"Opting in stores a tracking identifier in settings.json and enables anonymous\nusage analytics. This helps us to better debug, reproduce, and resolve issues\nand bugs within Pi. You can observe what is shared using /privacy and make\nchanges anytime in settings.json.",
+						"Off by default. Opting in only enables local analytics flags in settings.json.\nTonAny does not phone home to upstream services unless you configure endpoints.\nYou can change this later in settings.json or with /privacy.",
 					),
 					1,
 					0,
