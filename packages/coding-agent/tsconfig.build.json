@@ -1,0 +1,19 @@
+{
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"paths": {
+			"@tonany/pi-agent-core": ["../agent/dist/index.d.ts"],
+			"@tonany/pi-agent-core/*": ["../agent/dist/*.d.ts"],
+			"@tonany/pi-ai": ["../ai/dist/index.d.ts"],
+			"@tonany/pi-ai/*": ["../ai/dist/*.d.ts", "../ai/dist/providers/*.d.ts"],
+			"@tonany/pi-client": ["../client/dist/index.d.ts"],
+			"@tonany/pi-protocol": ["../protocol/dist/index.d.ts"],
+			"@tonany/pi-tui": ["../tui/dist/index.d.ts"],
+			"@tonany/pi-tui/*": ["../tui/dist/*.d.ts", "../tui/dist/components/*.d.ts"]
+		},
+		"rootDir": "./src"
+	},
+	"include": ["src/**/*.ts", "src/**/*.d.ts"],
+	"exclude": ["node_modules", "dist"]
+}
