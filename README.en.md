@@ -8,7 +8,7 @@
 
 # TonAny
 
-[Product site](extras/web/) · [Issues](https://github.com/toninfo/tonany/issues) · [Releases](https://github.com/toninfo/tonany/releases)
+[Product site](https://ton.ren/tonany/) · [Issues](https://github.com/toninfo/tonany/issues) · [Releases](https://github.com/toninfo/tonany/releases)
 
 **Local-first universal AI assistant.** TonAny lives in your terminal and delivers **finished work**, not just chat: tidy folders, edit code, run commands, remember preferences — and hand off to sibling products when the job is long engineering or office delivery.
 
@@ -104,7 +104,6 @@ tonany
 | `packages/ai/` | Multi-provider LLM API |
 | `packages/tui/` | Terminal UI |
 | `packages/{protocol,client,server}/` | Session protocol and services |
-| `extras/web/` | TON.REN product site (TON / TonWorker / TonAny) |
 | `docs/` | Product line and roadmap |
 | `.tonany/` | Project-level skills / prompts for this repo |
 
@@ -118,8 +117,9 @@ TonAny’s agent core comes from an open-source [Pi](https://github.com/earendil
 npm run build:offline
 npm run check
 ./test.sh
-cd extras/web && python3 -m http.server 8080   # product site
 ```
+
+Product site lives in [toninfo/ton](https://github.com/toninfo/ton) `extras/web/` (includes the TonAny page). Live: https://ton.ren/tonany/
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md).
 

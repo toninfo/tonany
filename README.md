@@ -8,7 +8,7 @@
 
 # TonAny
 
-[产品站](extras/web/) · [Issues](https://github.com/toninfo/tonany/issues) · [Releases](https://github.com/toninfo/tonany/releases)
+[产品站](https://ton.ren/tonany/) · [Issues](https://github.com/toninfo/tonany/issues) · [Releases](https://github.com/toninfo/tonany/releases)
 
 **本地优先的万能 AI 助理。** TonAny 常驻你的终端，交付的是**办完的事**，而不只是对话：整理目录、改代码、跑命令、记住偏好；遇到长程工程或办公交付，再交办给兄弟产品。
 
@@ -104,7 +104,6 @@ tonany
 | `packages/ai/` | 多厂商 LLM API |
 | `packages/tui/` | 终端 UI |
 | `packages/{protocol,client,server}/` | 会话协议与服务 |
-| `extras/web/` | TON.REN 产品站（TON / TonWorker / TonAny） |
 | `docs/` | 产品线与路线图 |
 | `.tonany/` | 本仓项目级 skills / prompts |
 
@@ -118,8 +117,9 @@ TonAny 的 agent 内核来自开源 [Pi](https://github.com/earendil-works/pi) �
 npm run build:offline
 npm run check
 ./test.sh
-cd extras/web && python3 -m http.server 8080   # 产品站
 ```
+
+产品站在 [toninfo/ton](https://github.com/toninfo/ton) 的 `extras/web/`（含 TonAny 页），线上：https://ton.ren/tonany/
 
 贡献约定见 [CONTRIBUTING.md](CONTRIBUTING.md)。安全报告见 [SECURITY.md](SECURITY.md)。
 

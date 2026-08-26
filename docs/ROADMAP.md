@@ -64,4 +64,4 @@ Windows：`.\tonany-test.ps1` 或见 `packages/coding-agent/docs/windows.md`。
 
 配置：`~/.tonany/agent/`，项目：`.tonany/`。
 
-产品站：`extras/web/`（含 TonAny 页；需同步到 ton 仓部署时见该目录 `SYNC_TO_TON.md`）。
+产品站：统一在 [toninfo/ton](https://github.com/toninfo/ton) 的 `extras/web/`（含 TonAny 页），线上 https://ton.ren/tonany/。

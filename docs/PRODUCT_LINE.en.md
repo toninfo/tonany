@@ -27,7 +27,7 @@ TonAny ships `/skill:handoff`: decide whether to do the work locally or hand off
 
 ## Product site
 
-Hub + three product pages live in [`extras/web/`](../extras/web/) (TON.REN style, brand red). Syncing back to `toninfo/ton`’s `extras/web` needs write access to that repo.
+Hub + three product pages live only in [toninfo/ton](https://github.com/toninfo/ton) [`extras/web/`](https://github.com/toninfo/ton/tree/main/extras/web) (TON.REN style). Live: https://ton.ren/ · https://ton.ren/tonany/
 
 ## Mental model
 

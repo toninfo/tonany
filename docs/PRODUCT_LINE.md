@@ -27,7 +27,7 @@ TonAny 内置 `/skill:handoff`：判断该自己干还是交给 ton / TonWorker�
 
 ## 产品站
 
-门户与三产品页在 [`extras/web/`](../extras/web/)（TON.REN 风格，品牌红）。同步回 `toninfo/ton` 的 `extras/web` 需 ton 仓写权限。
+门户与三产品页统一放在 [toninfo/ton](https://github.com/toninfo/ton) 的 [`extras/web/`](https://github.com/toninfo/ton/tree/main/extras/web)（TON.REN 风格）。线上：https://ton.ren/ · https://ton.ren/tonany/
 
 ## 用户心智
 
