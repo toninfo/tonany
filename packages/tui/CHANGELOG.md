@@ -2,11 +2,9 @@
 
 ## [Unreleased]
 
-### Fixed
+### Changed
 
-- Fixed duplicate fullscreen right-click paste in VS Code-based terminals on Windows ([#8186](https://github.com/earendil-works/pi/issues/8186)).
-- Fixed padded text exceeding narrow terminal widths ([#8252](https://github.com/earendil-works/pi/issues/8252)).
-- Fixed wrapped Markdown table links leaking color into borders and neighboring cells, including tables inside blockquotes ([#8335](https://github.com/earendil-works/pi/issues/8335)).
+- TonAny brand-red theme aligned with TON / TonWorker product line.
 
 ## [0.84.2] - 2026-08-14
 

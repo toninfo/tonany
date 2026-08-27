@@ -78,6 +78,11 @@ function assertPackagesAreRegisteredWithNpm() {
 	}
 
 	if (unregisteredPackages.length > 0) {
+		const usesTonanyScope = packageNames.every((name) => name.startsWith("@tonany/"));
+		if (usesTonanyScope) {
+			console.log("  Skipping npm registration check for @tonany/* packages (private TonAny release).\n");
+			return;
+		}
 		throw new Error(`The following public workspace packages are not registered on npm:\n${unregisteredPackages.map((packageName) => `  ${packageName}`).join("\n")}\nRegister them before running a release.`);
 	}
 
@@ -278,4 +283,4 @@ run("git push origin main");
 run(`git push origin v${version}`);
 console.log();
 
-console.log(`=== Prepared release v${version}; CI publication and pi.dev announcement start after the tag push ===`);
+console.log(`=== Prepared release v${version}; GitHub Release build starts after the tag push ===`);
