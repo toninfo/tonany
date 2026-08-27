@@ -5,15 +5,7 @@
  */
 
 import type { ExtensionAPI } from "@tonany/pi-coding-agent";
-import {
-	Editor,
-	type EditorTheme,
-	Key,
-	matchesKey,
-	Text,
-	visibleWidth,
-	wrapTextWithAnsi,
-} from "@tonany/pi-tui";
+import { Editor, type EditorTheme, Key, matchesKey, Text, visibleWidth, wrapTextWithAnsi } from "@tonany/pi-tui";
 import { Type } from "typebox";
 
 interface OptionWithDesc {

@@ -24,8 +24,8 @@ import {
 } from "../modes/interactive/theme/theme.ts";
 
 const OFFICIAL_PACKAGE_NAME = "@tonany/pi-coding-agent";
-const OFFICIAL_APP_NAME = "pi";
-const OFFICIAL_CONFIG_DIR_NAME = ".pi";
+const OFFICIAL_APP_NAME = "tonany";
+const OFFICIAL_CONFIG_DIR_NAME = ".tonany";
 
 interface DistributionMetadata {
 	packageName: string;

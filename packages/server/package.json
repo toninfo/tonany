@@ -1,6 +1,6 @@
 {
 	"name": "@tonany/pi-server",
-	"version": "0.84.2",
+	"version": "0.84.3",
 	"description": "experimental server package for pi",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -47,8 +47,8 @@
 		"node": ">=22.19.0"
 	},
 	"dependencies": {
-		"@tonany/pi-ai": "^0.84.2",
-		"@tonany/pi-protocol": "^0.84.2"
+		"@tonany/pi-ai": "^0.84.3",
+		"@tonany/pi-protocol": "^0.84.3"
 	},
 	"devDependencies": {
 		"shx": "0.4.0",

@@ -54,19 +54,9 @@ export class FirstTimeSetupComponent extends Container {
 		this.addChild(new Spacer(1));
 		this.addChild(new Text(theme.fg("accent", SETUP_LOGO_LINES.join("\n")), 1, 0));
 		this.addChild(new Spacer(1));
+		this.addChild(new Text(theme.fg("accent", theme.bold(`Welcome to ${APP_TITLE}.`)), 1, 0));
 		this.addChild(
-			new Text(
-				theme.fg("accent", theme.bold(`Welcome to ${APP_TITLE}.`)),
-				1,
-				0,
-			),
-		);
-		this.addChild(
-			new Text(
-				theme.fg("muted", `Local-first AI assistant (${APP_NAME}). Get things done in this TUI.`),
-				1,
-				0,
-			),
+			new Text(theme.fg("muted", `Local-first AI assistant (${APP_NAME}). Get things done in this TUI.`), 1, 0),
 		);
 		this.addChild(new Spacer(1));
 

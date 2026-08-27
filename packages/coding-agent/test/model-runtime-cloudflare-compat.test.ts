@@ -1,4 +1,5 @@
-import { complete, resetApiProviders } from "@tonany/pi-ai/compat";
+import type { Model } from "@tonany/pi-ai";
+import { complete, getModel, resetApiProviders } from "@tonany/pi-ai/compat";
 import { describe, expect, it, vi } from "vitest";
 import { AuthStorage } from "../src/core/auth-storage.ts";
 import { ModelRegistry } from "../src/core/model-registry.ts";
@@ -56,14 +57,23 @@ async function createCloudflareRuntime(): Promise<{ modelRuntime: ModelRuntime; 
 	return { modelRuntime, modelRegistry: new ModelRegistry(modelRuntime) };
 }
 
+function cloudflareGatewayWorkersAiKimiModel(): Model<"openai-completions"> {
+	const template = getModel("cloudflare-workers-ai", "@cf/moonshotai/kimi-k2.6")!;
+	return {
+		...template,
+		provider: "cloudflare-ai-gateway",
+		id: "workers-ai/@cf/moonshotai/kimi-k2.6",
+		baseUrl: "https://gateway.ai.cloudflare.com/v1/{CLOUDFLARE_ACCOUNT_ID}/{CLOUDFLARE_GATEWAY_ID}/compat",
+	};
+}
+
 describe("ModelRegistry Cloudflare compat streaming", () => {
 	it("materializes the Cloudflare endpoint through ModelRuntime streaming", async () => {
 		const { modelRuntime } = await createCloudflareRuntime();
-		const model = modelRuntime.getModel("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6");
-		expect(model).toBeDefined();
+		const model = cloudflareGatewayWorkersAiKimiModel();
 
 		resetApiProviders();
-		await modelRuntime.completeSimple(model!, { messages: [] });
+		await modelRuntime.completeSimple(model, { messages: [] });
 
 		const clientOptions = openAIState.clientOptions as {
 			baseURL?: string;
@@ -75,11 +85,10 @@ describe("ModelRegistry Cloudflare compat streaming", () => {
 
 	it("materializes the Cloudflare endpoint after extension-style auth resolution", async () => {
 		const { modelRegistry } = await createCloudflareRuntime();
-		const model = modelRegistry.find("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6");
-		expect(model).toBeDefined();
+		const model = cloudflareGatewayWorkersAiKimiModel();
 
 		resetApiProviders();
-		const auth = await modelRegistry.getApiKeyAndHeaders(model!);
+		const auth = await modelRegistry.getApiKeyAndHeaders(model);
 		expect(auth.ok).toBe(true);
 		if (!auth.ok) throw new Error(auth.error);
 		expect(auth.headers).toMatchObject({
@@ -88,7 +97,7 @@ describe("ModelRegistry Cloudflare compat streaming", () => {
 			"x-api-key": null,
 		});
 
-		await complete(model!, { messages: [] }, auth);
+		await complete(model, { messages: [] }, auth);
 
 		const clientOptions = openAIState.clientOptions as {
 			baseURL?: string;

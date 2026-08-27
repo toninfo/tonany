@@ -11,8 +11,7 @@ export interface ChangelogEntry {
 // tonany 独立仓库；LEGACY_REPO_RE 仍识别上游历史链接以便规范化
 const GITHUB_REPO = "toninfo/tonany";
 const CHANGELOG_LINK_BASE_PATH = "packages/coding-agent";
-const LEGACY_REPO_RE =
-	/^https:\/\/github\.com\/(?:badlogic|earendil-works)\/(?:pi|pi-mono)(?=\/|$)/;
+const LEGACY_REPO_RE = /^https:\/\/github\.com\/(?:badlogic|earendil-works)\/(?:pi|pi-mono)(?=\/|$)/;
 const URL_SCHEME_RE = /^[a-z][a-z0-9+.-]*:/i;
 const INLINE_MARKDOWN_LINK_RE = /(!?\[[^\]\n]+\]\()([^\s)]+)((?:\s+[^)]*)?\))/g;
 

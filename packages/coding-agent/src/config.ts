@@ -491,8 +491,7 @@ const piConfigName: string | undefined = pkg.piConfig?.name;
 export const PACKAGE_NAME: string = pkg.name || "@tonany/pi-coding-agent";
 // TonAny 品牌默认；package.json piConfig 可覆盖
 export const APP_NAME: string = piConfigName || "tonany";
-export const APP_TITLE: string =
-	pkg.piConfig?.title || (APP_NAME === "tonany" ? "TonAny" : APP_NAME);
+export const APP_TITLE: string = pkg.piConfig?.title || (APP_NAME === "tonany" ? "TonAny" : APP_NAME);
 export const CONFIG_DIR_NAME: string = pkg.piConfig?.configDir || ".tonany";
 export const VERSION: string = pkg.version || "0.0.0";
 

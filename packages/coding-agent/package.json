@@ -1,7 +1,7 @@
 {
 	"name": "@tonany/pi-coding-agent",
-	"version": "0.84.2",
-	"description": "TonAny \u2014 universal AI assistant TUI (local-first)",
+	"version": "0.84.3",
+	"description": "TonAny — universal AI assistant TUI (local-first)",
 	"type": "module",
 	"piConfig": {
 		"name": "tonany",
@@ -46,11 +46,11 @@
 		"prepublishOnly": "npm run clean && npm run build && npm run shrinkwrap"
 	},
 	"dependencies": {
-		"@tonany/pi-agent-core": "^0.84.2",
-		"@tonany/pi-ai": "^0.84.2",
-		"@tonany/pi-client": "^0.84.2",
-		"@tonany/pi-protocol": "^0.84.2",
-		"@tonany/pi-tui": "^0.84.2",
+		"@tonany/pi-agent-core": "^0.84.3",
+		"@tonany/pi-ai": "^0.84.3",
+		"@tonany/pi-client": "^0.84.3",
+		"@tonany/pi-protocol": "^0.84.3",
+		"@tonany/pi-tui": "^0.84.3",
 		"@silvia-odwyer/photon-node": "0.3.4",
 		"chalk": "5.6.2",
 		"cross-spawn": "7.0.6",

@@ -1458,7 +1458,7 @@ Pass `env` in stream options to scope provider configuration to a request. Value
 
 ```typescript
 const models = builtinModels();
-const model = models.getModel('cloudflare-ai-gateway', 'workers-ai/@cf/moonshotai/kimi-k2.6')!;
+const model = models.getModel('cloudflare-ai-gateway', 'gpt-4o-mini')!;
 
 const response = await models.complete(model, context, {
   env: {
