@@ -1,66 +1,39 @@
 # Windows Setup
 
-TonAny 在 Windows 上需要 bash 来跑 `bash` 工具。探测顺序：
+Pi uses Git Bash by default on Windows. Checked locations (in order):
 
-1. `~/.tonany/agent/settings.json` 里的自定义 `shellPath`
-2. Git Bash（`C:\Program Files\Git\bin\bash.exe`）
-3. PATH 上的 `bash.exe`（Cygwin / MSYS2 / WSL）
+1. Custom path from `~/.tonany/agent/settings.json`
+2. Git Bash (`C:\Program Files\Git\bin\bash.exe`)
+3. `bash.exe` on PATH (Cygwin, MSYS2, WSL)
 
-多数用户安装 [Git for Windows](https://git-scm.com/download/win) 即可。
+For most users, [Git for Windows](https://git-scm.com/download/win) is sufficient.
 
-## Custom Shell Path
+## PowerShell Tool
 
-编辑 `%USERPROFILE%\.tonany\agent\settings.json`：
+The optional `powershell` tool runs commands through `pwsh.exe` when available, otherwise Windows PowerShell. It starts PowerShell with `-NoProfile -NonInteractive -ExecutionPolicy Bypass`. Administrator-enforced execution policies can still take precedence.
+
+Use `defaultTools` to replace the model-facing `bash` tool:
+
+```json
+{
+  "defaultTools": ["read", "powershell", "edit", "write"]
+}
+```
+
+Or enable both while comparing behavior:
+
+```json
+{
+  "defaultTools": ["read", "bash", "powershell", "edit", "write"]
+}
+```
+
+The `!` and `!!` editor commands still use Bash.
+
+## Custom Bash Path
 
 ```json
 {
   "shellPath": "C:\\cygwin64\\bin\\bash.exe"
 }
 ```
-
-或指向 Git Bash：
-
-```json
-{
-  "shellPath": "C:\\Program Files\\Git\\bin\\bash.exe"
-}
-```
-
-## Run from source (PowerShell)
-
-```powershell
-cd path\to\tonany
-npm install --ignore-scripts
-npm run hydrate:model-data
-npm run build:offline
-.\tonany-test.ps1
-# 或：.\tonany-test.bat
-```
-
-全局安装后：
-
-```powershell
-tonany
-```
-
-`pi` 仍是别名，行为相同。
-
-## Paths
-
-| 用途 | 路径 |
-|------|------|
-| 用户配置 | `%USERPROFILE%\.tonany\agent\` |
-| 项目扩展 / skills | `<project>\.tonany\` |
-| 会话 | `%USERPROFILE%\.tonany\agent\sessions\`（可用环境变量覆盖） |
-
-环境变量示例：
-
-```powershell
-$env:TONANY_CODING_AGENT_DIR="D:\tonany-agent"
-```
-
-## Tips
-
-- 终端推荐 Windows Terminal；UTF-8 代码页更稳。
-- 若工具里的 POSIX 命令失败，确认 Git Bash / WSL 在 PATH 上。
-- 不要用「未安装 bash」的纯 `cmd.exe` 期望 `bash` 工具可用。

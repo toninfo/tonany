@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { getModel, streamSimple } from "../src/compat.ts";
-import { cloudflareGatewayWorkersAiKimiModel } from "./cloudflare-gateway-fixtures.ts";
 
 // Empty tools arrays must NOT be serialized as `tools: []` — some OpenAI-compatible
 // backends (e.g. DashScope / Aliyun Qwen via compatible-mode) reject the request with
 // `"[] is too short - 'tools'"` (HTTP 400) when `--no-tools` produces an empty array.
-// Regression for https://github.com/earendil-works/pi-mono/issues/<issue-number>
+// Regression for https://github.com/toninfo/tonany/issues/3649
 
 const mockState = vi.hoisted(() => ({
 	lastParams: undefined as unknown,
@@ -165,7 +164,7 @@ describe("openai-completions empty tools handling", () => {
 		process.env.CLOUDFLARE_API_KEY = "cf-token";
 		process.env.CLOUDFLARE_ACCOUNT_ID = "account-id";
 		process.env.CLOUDFLARE_GATEWAY_ID = "gateway-id";
-		const model = cloudflareGatewayWorkersAiKimiModel();
+		const model = getModel("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6")!;
 
 		await streamSimple(
 			model,
@@ -202,7 +201,7 @@ describe("openai-completions empty tools handling", () => {
 		process.env.CLOUDFLARE_API_KEY = "cf-token";
 		process.env.CLOUDFLARE_ACCOUNT_ID = "account-id";
 		process.env.CLOUDFLARE_GATEWAY_ID = "gateway-id";
-		const model = cloudflareGatewayWorkersAiKimiModel();
+		const model = getModel("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6")!;
 
 		await streamSimple(model, {
 			messages: [{ role: "user", content: "hi", timestamp: Date.now() }],
@@ -235,7 +234,7 @@ describe("openai-completions empty tools handling", () => {
 		process.env.CLOUDFLARE_API_KEY = "cf-token";
 		process.env.CLOUDFLARE_ACCOUNT_ID = "account-id";
 		process.env.CLOUDFLARE_GATEWAY_ID = "gateway-id";
-		const workersModel = cloudflareGatewayWorkersAiKimiModel();
+		const workersModel = getModel("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6")!;
 
 		await streamSimple(
 			workersModel,

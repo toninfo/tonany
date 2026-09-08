@@ -20,7 +20,6 @@ type StreamOptionsWithExtras = StreamOptions & Record<string, unknown>;
 
 import { hasAzureOpenAICredentials, resolveAzureDeploymentName } from "./azure-utils.ts";
 import { hasBedrockCredentials } from "./bedrock-utils.ts";
-import { cloudflareGatewayCatalogModel } from "./cloudflare-gateway-fixtures.ts";
 import { hasCloudflareAiGatewayCredentials, hasCloudflareWorkersAICredentials } from "./cloudflare-utils.ts";
 import { resolveApiKey } from "./oauth.ts";
 
@@ -336,10 +335,10 @@ describe("totalTokens field", () => {
 
 	describe.skipIf(!hasCloudflareAiGatewayCredentials())("Cloudflare AI Gateway", () => {
 		it(
-			"gpt-4o-mini - should return totalTokens equal to sum of components",
+			"workers-ai/@cf/moonshotai/kimi-k2.6 - should return totalTokens equal to sum of components",
 			{ retry: 3, timeout: 60000 },
 			async () => {
-				const llm = cloudflareGatewayCatalogModel();
+				const llm = getModel("cloudflare-ai-gateway", "workers-ai/@cf/moonshotai/kimi-k2.6");
 
 				console.log(`\nCloudflare AI Gateway / ${llm.id}:`);
 				const { first, second } = await testTotalTokensWithCache(llm, {

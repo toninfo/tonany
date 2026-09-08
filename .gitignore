@@ -42,7 +42,4 @@ plans/
 .pi/hf-sessions/
 .pi/hf-sessions-backup/
 collect.sh
-
-# TonAny local dirs
-.tonany/hf-sessions/
-.tonany/hf-sessions-backup/
+packages/agent/docs/extensions/pi-server-artifact/index.md

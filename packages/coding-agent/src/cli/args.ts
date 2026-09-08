@@ -79,7 +79,16 @@ export function parseArgs(args: string[]): Args {
 	for (let i = 0; i < args.length; i++) {
 		const arg = args[i];
 
-		if (arg === "--help" || arg === "-h") {
+		if (arg === "--") {
+			for (const positionalArg of args.slice(i + 1)) {
+				if (positionalArg.startsWith("@")) {
+					result.fileArgs.push(positionalArg.slice(1));
+				} else {
+					result.messages.push(positionalArg);
+				}
+			}
+			break;
+		} else if (arg === "--help" || arg === "-h") {
 			result.help = true;
 		} else if (arg === "--version" || arg === "-v") {
 			result.version = true;
@@ -250,16 +259,16 @@ export function printHelp(extensionFlags?: ExtensionFlag[]): void {
 					})
 					.join("\n")}\n`
 			: "";
-	console.log(`${chalk.bold(APP_NAME)} - TonAny universal AI assistant (TUI) with read, bash, edit, write tools
+	console.log(`${chalk.bold(APP_NAME)} - AI coding assistant with read, bash, edit, write tools
 
 ${chalk.bold("Usage:")}
-  ${APP_NAME} [options] [@files...] [messages...]
+  ${APP_NAME} [options] [--] [@files...] [messages...]
 
 ${chalk.bold("Commands:")}
   ${APP_NAME} install <source> [-l]     Install extension source and add to settings
   ${APP_NAME} remove <source> [-l]      Remove extension source from settings
   ${APP_NAME} uninstall <source> [-l]   Alias for remove
-  ${APP_NAME} update [source|self|tonany|pi]  Update TonAny, extensions, or model catalogs
+  ${APP_NAME} update [source|self|pi]   Update pi, extensions, or model catalogs
   ${APP_NAME} list                      List installed extensions from settings
   ${APP_NAME} config [-l]               Open TUI to enable/disable package resources (Tab switches scope)
   ${APP_NAME} auth <command>            Print credentials or check provider readiness
@@ -269,7 +278,7 @@ ${chalk.bold("Options:")}
   --provider <name>              Provider name (default: google)
   --model <pattern>              Model pattern or ID (supports "provider/id" and optional ":<thinking>")
   --api-key <key>                API key (defaults to env vars)
-  --system-prompt <text>         System prompt (default: TonAny assistant prompt)
+  --system-prompt <text>         System prompt (default: coding assistant prompt)
   --append-system-prompt <text>  Append text or file contents to the system prompt (can be used multiple times)
   --mode <mode>                  Output mode: text (default), json, or rpc
   --print, -p                    Non-interactive mode: process prompt and exit
@@ -307,6 +316,7 @@ ${chalk.bold("Options:")}
   --approve, -a                  Trust project-local files for this run
   --no-approve, -na              Ignore project-local files for this run
   --offline                      Disable startup network operations (same as PI_OFFLINE=1)
+  --                             End option parsing; treat remaining arguments as messages/files
   --help, -h                     Show this help
   --version, -v                  Show version number
 
@@ -330,6 +340,9 @@ ${chalk.bold("Examples:")}
 
   # Non-interactive mode (process and exit)
   ${APP_NAME} -p "List all .ts files in src/"
+
+  # Prompt beginning with a dash
+  ${APP_NAME} -p -- "- Summarize these points"
 
   # Multiple messages (interactive)
   ${APP_NAME} "Read package.json" "What dependencies do we have?"
@@ -422,12 +435,13 @@ ${chalk.bold("Environment Variables:")}
   PI_SHARE_VIEWER_URL              - Base URL for /share command (default: unset; set to enable sharing)
 
 ${chalk.bold("Built-in Tool Names:")}
-  read   - Read file contents
-  bash   - Execute bash commands
-  edit   - Edit files with find/replace
-  write  - Write files (creates/overwrites)
-  grep   - Search file contents (read-only, off by default)
-  find   - Find files by glob pattern (read-only, off by default)
-  ls     - List directory contents (read-only, off by default)
+  read       - Read file contents
+  bash       - Execute bash commands
+  powershell - Execute PowerShell commands on Windows
+  edit       - Edit files with find/replace
+  write      - Write files (creates/overwrites)
+  grep       - Search file contents (read-only, off by default)
+  find       - Find files by glob pattern (read-only, off by default)
+  ls         - List directory contents (read-only, off by default)
 `);
 }

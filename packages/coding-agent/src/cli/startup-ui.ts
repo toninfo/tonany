@@ -1,4 +1,10 @@
-import { ProcessTerminal, setKeybindings, type TUI, TuiMainScreen } from "@tonany/pi-tui";
+import {
+	ProcessTerminal,
+	setCapabilityOverrides,
+	setKeybindings,
+	type TUI,
+	TuiMainScreen,
+} from "@tonany/pi-tui";
 import { existsSync } from "fs";
 import { APP_NAME, CONFIG_DIR_NAME, ENV_AGENT_DIR, getAgentDir, getSettingsPath, PACKAGE_NAME } from "../config.ts";
 import { areExperimentalFeaturesEnabled } from "../core/experimental.ts";
@@ -24,7 +30,7 @@ import {
 } from "../modes/interactive/theme/theme.ts";
 
 const OFFICIAL_PACKAGE_NAME = "@tonany/pi-coding-agent";
-const OFFICIAL_APP_NAME = "tonany";
+const OFFICIAL_APP_NAME = "pi";
 const OFFICIAL_CONFIG_DIR_NAME = ".tonany";
 
 interface DistributionMetadata {
@@ -75,6 +81,7 @@ async function loadStartupThemes(settingsManager: SettingsManager): Promise<Them
 }
 
 export async function createStartupTui(settingsManager: SettingsManager): Promise<TUI> {
+	setCapabilityOverrides(settingsManager.getTerminalCapabilityOverrides());
 	setRegisteredThemes(await loadStartupThemes(settingsManager));
 	const terminalTheme = detectTerminalBackgroundFromEnv().theme;
 	initTheme(resolveThemeSetting(settingsManager.getThemeSetting(), terminalTheme) ?? terminalTheme);

@@ -22,7 +22,7 @@ The editor can be replaced temporarily by built-in UI such as `/settings` or by 
 | File reference | Type `@` to fuzzy-search project files |
 | Path completion | Press Tab to complete paths |
 | Multi-line input | Shift+Enter, or Ctrl+Enter on Windows Terminal |
-| Copy response | Ctrl+X copies the last assistant message; in `/tree`, it copies the selected message |
+| Copy response | Ctrl+X copies the selected message in `/tree`; otherwise it copies the last assistant message, or the active fullscreen text selection when `fullscreenCopyOnSelect` is disabled |
 | Images | Paste with Ctrl+V, Alt+V on Windows, or drag into the terminal |
 | Shell command | `!command` runs and sends output to the model |
 | Hidden shell command | `!!command` runs without sending output to the model |
@@ -38,9 +38,10 @@ Type `/` in the editor to open command completion. Extensions can register custo
 |---------|-------------|
 | `/login`, `/logout` | Manage OAuth or API-key credentials |
 | [`/llama`](llama-cpp.md) | Download, load, and unload llama.cpp router models |
-| `/model` | Switch models |
+| `/model` | Switch models; Ctrl+S in the picker saves the startup default |
+| `/thinking` | Switch thinking level; Ctrl+S in the picker saves the startup default |
 | `/scoped-models` | Enable/disable models for Ctrl+P cycling |
-| `/settings` | Thinking level, theme, message delivery, transport |
+| `/settings` | Theme, message delivery, transport, and other preferences |
 | `/resume` | Pick from previous sessions |
 | `/new` | Start a new session |
 | `/name <name>` | Set session display name |
@@ -74,7 +75,7 @@ Configure delivery in [Settings](settings.md) with `steeringMode` and `followUpM
 
 ## Sessions
 
-Sessions are saved automatically to `~/.pi/agent/sessions/`, organized by working directory.
+Sessions are saved automatically to `~/.tonany/agent/sessions/`, organized by working directory.
 
 ```bash
 pi -c                  # Continue most recent session
@@ -99,7 +100,7 @@ See [Sessions](sessions.md) and [Compaction](compaction.md) for details.
 
 Pi loads `AGENTS.md` or `CLAUDE.md` at startup from:
 
-- `~/.pi/agent/AGENTS.md` for global instructions
+- `~/.tonany/agent/AGENTS.md` for global instructions
 - parent directories, walking up from the current working directory
 - the current directory
 
@@ -111,24 +112,24 @@ Use context files for project conventions, commands, safety rules, and preferenc
 
 Replace the default system prompt with:
 
-- `.pi/SYSTEM.md` for a project
-- `~/.pi/agent/SYSTEM.md` globally
+- `.tonany/SYSTEM.md` for a project
+- `~/.tonany/agent/SYSTEM.md` globally
 
 Append to the default prompt without replacing it with `APPEND_SYSTEM.md` in either location.
 
 ### Project Trust
 
-On interactive startup, pi asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.pi/agent/trust.json`. Trusting a project allows pi to load `.pi/settings.json` and `.pi` resources, install missing project packages, and execute project extensions.
+On interactive startup, pi asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.tonany/agent/trust.json`. Trusting a project allows pi to load `.tonany/settings.json` and `.tonany` resources, install missing project packages, and execute project extensions.
 
 Before the trust decision, pi loads only context files, user/global extensions, and CLI `-e` extensions so they can handle the `project_trust` event. Project-local extensions, project package-managed extensions, and project settings are loaded only after the project is trusted. This split also applies when switching to a session from a different cwd whose trust has not been resolved in the current process.
 
 Non-interactive modes (`-p`, `--mode json`, and `--mode rpc`) do not show a trust prompt. Without an applicable saved trust decision, they use `defaultProjectTrust` from global settings: `ask` (default) and `never` ignore those project resources, while `always` trusts them. Pass `--approve`/`-a` or `--no-approve`/`-na` to override project trust for one run.
 
-If no extension or saved decision applies, `defaultProjectTrust` controls the fallback behavior. Set it to `"ask"`, `"always"`, or `"never"` in `~/.pi/agent/settings.json`, or change it with `/settings`.
+If no extension or saved decision applies, `defaultProjectTrust` controls the fallback behavior. Set it to `"ask"`, `"always"`, or `"never"` in `~/.tonany/agent/settings.json`, or change it with `/settings`.
 
 `pi config` and package commands use the same project trust flow, except `pi update` never prompts. Pass `--approve` to trust project-local settings for one command or `--no-approve` to ignore them.
 
-Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.pi/agent/trust.json` only; the current session is not reloaded, so restart pi for changes to take effect.
+Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.tonany/agent/trust.json` only; the current session is not reloaded, so restart pi for changes to take effect.
 
 
 ## Exporting and Sharing Sessions
@@ -142,7 +143,7 @@ If you use pi for open source work and want to publish sessions for model, promp
 ## CLI Reference
 
 ```bash
-pi [options] [@files...] [messages...]
+pi [options] [--] [@files...] [messages...]
 ```
 
 ### Package Commands
@@ -213,7 +214,7 @@ cat README.md | pi -p "Summarize this text"
 | `--no-builtin-tools`, `-nbt` | Disable built-in tools but keep extension/custom tools enabled |
 | `--no-tools`, `-nt` | Disable all tools |
 
-Built-in tools: `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls`.
+Built-in tools: `read`, `bash`, `powershell` (Windows), `edit`, `write`, `grep`, `find`, `ls`.
 
 ### Resource Options
 
@@ -246,6 +247,7 @@ pi --no-extensions -e ./my-extension.ts
 | `--verbose` | Force verbose startup |
 | `-a`, `--approve` | Trust project-local files for this run |
 | `-na`, `--no-approve` | Ignore project-local files for this run |
+| `--` | Stop option parsing; remaining arguments are prompts or `@file` inputs |
 | `-h`, `--help` | Show help |
 | `-v`, `--version` | Show version |
 
@@ -271,6 +273,9 @@ pi "List all .ts files in src/"
 
 # Non-interactive
 pi -p "Summarize this codebase"
+
+# Prompt beginning with a dash
+pi -p -- "- Summarize these points"
 
 # Non-interactive with piped stdin
 cat README.md | pi -p "Summarize this text"

@@ -1,90 +1,167 @@
 # Quickstart
 
-从安装到第一次有用的 TonAny 会话。
+This page gets you from install to a useful first pi session.
 
 ## Install
 
-从本仓源码（推荐开发）：
-
-```bash
-# Node >= 22.19
-npm install --ignore-scripts
-npm run hydrate:model-data
-npm run build:offline
-./tonany-test.sh
-```
-
-或安装 coding-agent 包：
+Pi is distributed as an npm package:
 
 ```bash
 npm install -g --ignore-scripts @tonany/pi-coding-agent
-tonany
 ```
 
-`--ignore-scripts` 会跳过依赖生命周期脚本；正常安装不需要 install scripts。
+`--ignore-scripts` disables dependency lifecycle scripts during install. Pi does not require install scripts for normal npm installs.
 
 ### Uninstall
 
+Use the package manager that installed pi. The curl installer uses npm globally, so curl and npm installs are removed with npm:
+
 ```bash
+# curl installer or npm install -g
 npm uninstall -g @tonany/pi-coding-agent
+
+# pnpm
+pnpm remove -g @tonany/pi-coding-agent
+
+# Yarn
+yarn global remove @tonany/pi-coding-agent
+
+# Bun
+bun uninstall -g @tonany/pi-coding-agent
 ```
 
-卸载不会删除 `~/.tonany/agent/` 下的设置、凭据、会话和已装包。
+Uninstalling pi leaves settings, credentials, sessions, and installed pi packages in `~/.tonany/agent/`.
 
-在项目目录启动：
+Then start pi in the project directory you want it to work on:
 
 ```bash
 cd /path/to/project
-tonany
+pi
 ```
-
-Windows 见 [windows.md](windows.md)。
 
 ## Authenticate
 
-### 订阅登录
+Pi can use subscription providers through `/login`, or API-key providers through environment variables or the auth file.
+
+### Option 1: subscription login
+
+Start pi and run:
 
 ```text
 /login
 ```
 
-可选 Claude Pro/Max、ChatGPT Plus/Pro (Codex)、GitHub Copilot 等。
+Then select a provider. Built-in subscription logins include Claude Pro/Max, ChatGPT Plus/Pro (Codex), and GitHub Copilot.
 
-### API key
+### Option 2: API key
+
+Set an API key before launching pi:
 
 ```bash
-# PowerShell
-$env:ANTHROPIC_API_KEY="sk-ant-..."
-tonany
-
-# bash
 export ANTHROPIC_API_KEY=sk-ant-...
-tonany
+pi
 ```
 
-也可用 `/login` 把 API key 写入 `~/.tonany/agent/auth.json`。
+You can also run `/login` and select an API-key provider to store the key in `~/.tonany/agent/auth.json`.
 
-详见 [Providers](providers.md)。
+See [Providers](providers.md) for all supported providers, environment variables, and cloud-provider setup.
 
 ## First session
+
+Once pi starts, type a request and press Enter:
 
 ```text
 Summarize this repository and tell me how to run its checks.
 ```
 
-默认工具：`read` / `write` / `edit` / `bash`。更多能力用 skills：
+By default, pi gives the model four tools:
 
-```text
-/skill:memory
-/skill:handoff
+- `read` - read files
+- `write` - create or overwrite files
+- `edit` - patch files
+- `bash` - run shell commands
+
+Additional built-in read-only tools (`grep`, `find`, `ls`) are available through tool options. Pi runs in your current working directory and can modify files there. Use git or another checkpointing workflow if you want easy rollback.
+
+## Give pi project instructions
+
+Pi loads context files at startup. Add an `AGENTS.md` file to tell it how to work in a project:
+
+```markdown
+# Project Instructions
+
+- Run `npm run check` after code changes.
+- Do not run production migrations locally.
+- Keep responses concise.
 ```
 
-## Product line
+Pi loads:
 
-| 产品 | 何时用 |
-|------|--------|
-| **TonAny** | 眼前事、本地文件、短任务、助理问答 |
-| **ton** | 长程工程编排（clarify → plan → execute → verify） |
-| **TonWorker** | 办公交付与连接器 |
+- `~/.tonany/agent/AGENTS.md` for global instructions
+- `AGENTS.md` or `CLAUDE.md` from parent directories and the current directory
 
-交办说明：`/skill:handoff`。产品线总览：仓库根目录 `docs/PRODUCT_LINE.md`。
+If a directory contains `AGENTS.override.md`, Pi loads it instead of `AGENTS.md` or `CLAUDE.md` from that directory.
+
+Restart pi, or run `/reload`, after changing context files.
+
+## Common things to try
+
+### Reference files
+
+Type `@` in the editor to fuzzy-search files, or pass files on the command line:
+
+```bash
+pi @README.md "Summarize this"
+pi @src/app.ts @src/app.test.ts "Review these together"
+```
+
+Images or text can be pasted with Ctrl+V (Alt+V on Windows); images can also be dragged into supported terminals.
+
+### Run shell commands
+
+In interactive mode:
+
+```text
+!npm run lint
+```
+
+The command output is sent to the model. Use `!!command` to run a command without adding its output to the model context.
+
+### Switch models
+
+Use `/model` or Ctrl+L to choose a model for the current session. Press Ctrl+S in the model picker to save the highlighted model as the startup default. Use `/thinking` to choose a thinking level for the current session, or Ctrl+S in that picker to save the startup default thinking level. Use Shift+Tab to cycle thinking level. Use Ctrl+P / Shift+Ctrl+P to cycle through scoped models.
+
+### Continue later
+
+Sessions are saved automatically:
+
+```bash
+pi -c                  # Continue most recent session
+pi -r                  # Browse previous sessions
+pi --name "my task"    # Set session display name at startup
+pi --session <path|id> # Open a specific session
+```
+
+Inside pi, use `/resume`, `/new`, `/tree`, `/fork`, and `/clone` to manage sessions.
+
+### Non-interactive mode
+
+For one-shot prompts:
+
+```bash
+pi -p "Summarize this codebase"
+cat README.md | pi -p "Summarize this text"
+pi -p @screenshot.png "What's in this image?"
+```
+
+Use `--mode json` for JSON event output or `--mode rpc` for process integration.
+
+## Next steps
+
+- [Using Pi](usage.md) - interactive mode, slash commands, sessions, context files, and CLI reference.
+- [Providers](providers.md) - authentication and model setup.
+- [Settings](settings.md) - global and project configuration.
+- [Keybindings](keybindings.md) - shortcuts and customization.
+- [Pi Packages](packages.md) - install shared extensions, skills, prompts, and themes.
+
+Platform notes: [Windows](windows.md), [Termux](termux.md), [tmux](tmux.md), [Terminal setup](terminal-setup.md), [Shell aliases](shell-aliases.md).

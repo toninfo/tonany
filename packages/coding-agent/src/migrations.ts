@@ -73,13 +73,13 @@ export function migrateAuthToAuthJson(): string[] {
 }
 
 /**
- * Migrate sessions from ~/.pi/agent/*.jsonl to proper session directories.
+ * Migrate sessions from ~/.tonany/agent/*.jsonl to proper session directories.
  *
- * Bug in v0.30.0: Sessions were saved to ~/.pi/agent/ instead of
- * ~/.pi/agent/sessions/<encoded-cwd>/. This migration moves them
+ * Bug in v0.30.0: Sessions were saved to ~/.tonany/agent/ instead of
+ * ~/.tonany/agent/sessions/<encoded-cwd>/. This migration moves them
  * to the correct location based on the cwd in their session header.
  *
- * See: https://github.com/earendil-works/pi-mono/issues/320
+ * See: https://github.com/toninfo/tonany-mono/issues/320
  */
 export function migrateSessionsFromAgentRoot(): void {
 	const agentDir = getAgentDir();

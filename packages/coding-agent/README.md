@@ -1,14 +1,38 @@
-# TonAny
+<p align="center">
+  <a href="https://pi.dev">
+    <img alt="pi logo" src="https://pi.dev/logo-auto.svg" width="128">
+  </a>
+</p>
+<p align="center">
+  <a href="https://discord.com/invite/3cU7Bz4UPx"><img alt="Discord" src="https://img.shields.io/badge/discord-community-5865F2?style=flat-square&logo=discord&logoColor=white" /></a>
+  <a href="https://www.npmjs.com/package/@tonany/pi-coding-agent"><img alt="npm" src="https://img.shields.io/npm/v/@tonany/pi-coding-agent?style=flat-square" /></a>
+</p>
 
-> Docs: [简体中文总览](../../README.md) · [English overview](../../README.en.md) · [Quickstart](docs/quickstart.md) · [Windows](docs/windows.md)
+> New issues and PRs from new contributors are auto-closed by default. Maintainers review auto-closed issues daily. See [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
-**TonAny** is a local-first universal AI assistant in the terminal. It belongs to the toninfo product line with [ton](https://github.com/toninfo/ton) (engineering orchestration) and [TonWorker](https://github.com/toninfo/tonworker) (office coworking).
+---
 
-Extend TonAny with TypeScript [Extensions](#extensions), [Skills](#skills), [Prompt Templates](#prompt-templates), and [Themes](#themes). Ship those as packages under `.tonany/` or npm/git installs.
+Pi is a minimal terminal coding harness. Adapt pi to your workflows, not the other way around, without having to fork and modify pi internals. Extend it with TypeScript [Extensions](#extensions), [Skills](#skills), [Prompt Templates](#prompt-templates), and [Themes](#themes). Put your extensions, skills, prompt templates, and themes in [Pi Packages](#pi-packages) and share them with others via npm or git.
 
-TonAny runs in four modes: interactive TUI, print/JSON, RPC for process integration, and an SDK for embedding.
+Pi ships with powerful defaults but skips features like sub agents and plan mode. Instead, you can ask pi to build what you want or install a third party pi package that matches your workflow.
 
-See also: [Product line](../../docs/PRODUCT_LINE.md) · [Roadmap](../../docs/ROADMAP.md)
+Pi runs in four modes: interactive, print or JSON, RPC for process integration, and an SDK for embedding in your own apps.
+
+## Share your OSS coding agent sessions
+
+If you use pi for open source work, please share your coding agent sessions.
+
+Public OSS session data helps improve models, prompts, tools, and evaluations using real development workflows.
+
+For the full explanation, see [this post on X](https://x.com/badlogicgames/status/2037811643774652911).
+
+To publish sessions, use [`badlogic/pi-share-hf`](https://github.com/badlogic/pi-share-hf). Read its README.md for setup instructions. All you need is a Hugging Face account, the Hugging Face CLI, and `pi-share-hf`.
+
+You can also watch [this video](https://x.com/badlogicgames/status/2041151967695634619), where I show how I publish my `pi-mono` sessions.
+
+I regularly publish my own `pi-mono` work sessions here:
+
+- [badlogicgames/pi-mono on Hugging Face](https://huggingface.co/datasets/badlogicgames/pi-mono)
 
 ## Table of Contents
 
@@ -29,7 +53,7 @@ See also: [Product line](../../docs/PRODUCT_LINE.md) · [Roadmap](../../docs/ROA
   - [Skills](#skills)
   - [Extensions](#extensions)
   - [Themes](#themes)
-  - [Packages](#pi-packages)
+  - [Pi Packages](#pi-packages)
 - [Programmatic Usage](#programmatic-usage)
 - [Philosophy](#philosophy)
 - [CLI Reference](#cli-reference)
@@ -38,38 +62,33 @@ See also: [Product line](../../docs/PRODUCT_LINE.md) · [Roadmap](../../docs/ROA
 
 ## Quick Start
 
-From this repo:
-
-```bash
-npm install --ignore-scripts
-npm run hydrate:model-data
-npm run build:offline
-./tonany-test.sh
-```
-
-Or install the package:
-
 ```bash
 npm install -g --ignore-scripts @tonany/pi-coding-agent
 ```
 
-`--ignore-scripts` disables dependency lifecycle scripts during install. TonAny does not require install scripts for normal npm installs.
+`--ignore-scripts` disables dependency lifecycle scripts during install. Pi does not require install scripts for normal npm installs.
+
+Installer alternative:
+
+```bash
+curl -fsSL https://pi.dev/install.sh | sh
+```
 
 Authenticate with an API key:
 
 ```bash
 export ANTHROPIC_API_KEY=sk-ant-...
-tonany
+pi
 ```
 
 Or use your existing subscription:
 
 ```bash
-tonany
+pi
 /login  # Then select provider
 ```
 
-Then talk to TonAny. Default tools: `read`, `write`, `edit`, and `bash`. Add capabilities via [skills](#skills) (try `/skill:memory`, `/skill:handoff`), [prompt templates](#prompt-templates), [extensions](#extensions), or packages.
+Then just talk to pi. By default, pi gives the model four tools: `read`, `write`, `edit`, and `bash`. The model uses these to fulfill your requests. Add capabilities via [skills](#skills), [prompt templates](#prompt-templates), [extensions](#extensions), or [pi packages](#pi-packages).
 
 **Platform notes:** [Windows](docs/windows.md) | [Termux (Android)](docs/termux.md) | [tmux](docs/tmux.md) | [Terminal setup](docs/terminal-setup.md) | [Shell aliases](docs/shell-aliases.md)
 
@@ -77,7 +96,7 @@ Then talk to TonAny. Default tools: `read`, `write`, `edit`, and `bash`. Add cap
 
 ## Providers & Models
 
-For each built-in provider, TonAny maintains a list of tool-capable models. Configured provider catalogs refresh only when you set `PI_MODEL_CATALOG_URL` (or run local hydrate). Authenticate via subscription (`/login`) or API key, then select any model via `/model` (or Ctrl+L).
+For each built-in provider, pi maintains a list of tool-capable models. Configured provider catalogs refresh automatically; run `pi update --models` to force an immediate refresh. Authenticate via subscription (`/login`) or API key, then select any model from that provider via `/model` (or Ctrl+L). Press Ctrl+S in the model picker to save the highlighted model as the startup default.
 
 **Subscriptions:**
 - Anthropic Claude Pro/Max
@@ -133,7 +152,7 @@ The interface from top to bottom:
 
 - **Startup header** - Shows shortcuts (`/hotkeys` for all), loaded AGENTS.md files, prompt templates, skills, and extensions
 - **Messages** - Your messages, assistant responses, tool calls and results, notifications, errors, and extension UI
-- **Editor** - Where you type; border color indicates thinking level
+- **Editor** - Where you type; border color indicates thinking level and the border shows the streaming working indicator
 - **Footer** - Working directory, session name, total token/cache usage (`↑` input, `↓` output, `R` cache read, `W` cache write, `CH` latest cache hit rate), cost, context usage, current model. Totals include assistant responses, usage reported by tools, and summary generation.
 
 The editor can be temporarily replaced by other UI, like built-in `/settings` or custom UI from extensions (e.g., a Q&A tool that lets the user answer model questions in a structured format). [Extensions](#extensions) can also replace the editor, add widgets above/below it, a status line, custom footer, or overlays.
@@ -159,9 +178,10 @@ Type `/` in the editor to trigger commands. [Extensions](#extensions) can regist
 |---------|-------------|
 | `/login`, `/logout` | Manage provider credentials |
 | [`/llama`](docs/llama-cpp.md) | Download, load, and unload llama.cpp router models |
-| `/model` | Switch models |
+| `/model` | Switch models; Ctrl+S in the picker saves the startup default |
+| `/thinking` | Switch thinking level; Ctrl+S in the picker saves the startup default |
 | `/scoped-models` | Enable/disable models for Ctrl+P cycling |
-| `/settings` | Thinking level, theme, message delivery, transport |
+| `/settings` | Theme, message delivery, transport, and other preferences |
 | `/resume` | Pick from previous sessions |
 | `/new` | Start a new session |
 | `/name <name>` | Set session display name |
@@ -197,7 +217,7 @@ See `/hotkeys` for the full list. Customize via `~/.tonany/agent/keybindings.jso
 | Shift+Tab | Cycle thinking level |
 | Ctrl+O | Collapse/expand tool output |
 | Ctrl+T | Collapse/expand thinking blocks |
-| Ctrl+X | Copy the last assistant message |
+| Ctrl+X | Copy the last assistant message; with fullscreen copy-on-select disabled, copy the active text selection |
 
 ### Message Queue
 
@@ -235,7 +255,7 @@ Use `/session` in interactive mode to see the current session ID before reusing 
 
 ### Branching
 
-**`/tree`** - Navigate the session tree in-place. Select any previous point, continue from there, and switch between branches. All history preserved in a single file.
+**`/tree`** - Navigate the session tree in-place. Select any previous point, continue from there, and switch between branches. All history preserved in a single file. Selecting a point while the model is responding cancels that response. Navigation cannot proceed while compaction or another tree navigation is still running; wait for it to finish and retry.
 
 <p align="center"><img src="docs/images/tree-view.png" alt="Tree View" width="600"></p>
 
@@ -275,7 +295,7 @@ See [docs/settings.md](docs/settings.md) for all options.
 
 ### Project Trust
 
-On interactive startup, pi asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.tonany/agent/trust.json`. Trusting a project allows pi to load `.tonany/settings.json` and `.pi` resources, install missing project packages, and execute project extensions.
+On interactive startup, pi asks before trusting a project folder that contains project-local settings, resources, or project `.agents/skills` and has no saved decision for the folder or a parent folder in `~/.tonany/agent/trust.json`. Trusting a project allows pi to load `.tonany/settings.json` and `.tonany` resources, install missing project packages, and execute project extensions.
 
 Before the trust decision, pi loads only context files, user/global extensions, and CLI `-e` extensions so they can handle the `project_trust` event. Project-local extensions, project package-managed extensions, and project settings are loaded only after the project is trusted. This split also applies when switching to a session from a different cwd whose trust has not been resolved in the current process.
 
@@ -283,18 +303,18 @@ Non-interactive modes (`-p`, `--mode json`, and `--mode rpc`) do not show a trus
 
 If no extension or saved decision applies, `defaultProjectTrust` controls the fallback behavior. Set it to `"ask"`, `"always"`, or `"never"` in `~/.tonany/agent/settings.json`, or change it with `/settings`.
 
-`tonany config` and package commands use the same project trust flow, except `tonany update` never prompts. Pass `--approve` to trust project-local settings for one command or `--no-approve` to ignore them.
+`pi config` and package commands use the same project trust flow, except `pi update` never prompts. Pass `--approve` to trust project-local settings for one command or `--no-approve` to ignore them.
 
-Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.tonany/agent/trust.json` only; the current session is not reloaded, so restart tonany for changes to take effect.
+Use `/trust` in interactive mode to save a project trust decision for future sessions, including trust for the immediate parent folder. It writes `~/.tonany/agent/trust.json` only; the current session is not reloaded, so restart pi for changes to take effect.
 
 ### Telemetry and update checks
 
-TonAny defaults to **no upstream phone-home**:
+Pi has two separate startup features:
 
-- **Update check:** off unless you set `PI_LATEST_VERSION_URL` to a self-hosted endpoint (or use `PI_SKIP_VERSION_CHECK=1` explicitly).
-- **Install telemetry:** off by default (`enableInstallTelemetry` defaults to `false`). Optional provider attribution headers follow the same flag. Set `PI_REPORT_INSTALL_URL` only if you run your own collector.
+- **Update check:** fetches `https://pi.dev/api/latest-version` to check whether a newer Pi version exists. Disable it with `PI_SKIP_VERSION_CHECK=1`. Disabling update checks only turns off this check.
+- **Install/update telemetry:** after first install or a changelog-detected update, sends an anonymous version ping to `https://pi.dev/api/report-install`. This setting also controls optional provider attribution headers for OpenRouter, Cloudflare, and direct NVIDIA NIM requests. Opt out by setting `enableInstallTelemetry` to `false` in `settings.json`, or by setting `PI_TELEMETRY=0`. This does not disable update checks; Pi may still contact `pi.dev` for the latest version unless update checks are disabled or offline mode is enabled.
 
-Use `--offline` or `PI_OFFLINE=1` to disable remaining startup network operations (package checks, etc.).
+Use `--offline` or `PI_OFFLINE=1` to disable all startup network operations described here, including update checks, package update checks, and install/update telemetry.
 
 ---
 
@@ -495,7 +515,7 @@ Read the [blog post](https://mariozechner.at/posts/2025-11-30-pi-coding-agent/) 
 ## CLI Reference
 
 ```bash
-pi [options] [@files...] [messages...]
+pi [options] [--] [@files...] [messages...]
 ```
 
 ### Package Commands
@@ -515,7 +535,7 @@ pi list                      # List installed packages
 pi config                    # Enable/disable package resources
 ```
 
-`tonany config` and project package commands accept `--approve`/`--no-approve` to trust or ignore project-local settings for one command. `tonany update` never prompts for project trust.
+`pi config` and project package commands accept `--approve`/`--no-approve` to trust or ignore project-local settings for one command. `pi update` never prompts for project trust.
 
 ### Modes
 
@@ -565,7 +585,7 @@ cat README.md | pi -p "Summarize this text"
 | `--no-builtin-tools`, `-nbt` | Disable built-in tools by default but keep extension/custom tools enabled |
 | `--no-tools`, `-nt` | Disable all tools by default |
 
-Available built-in tools: `read`, `bash`, `edit`, `write`, `grep`, `find`, `ls`
+Available built-in tools: `read`, `bash`, `powershell` (Windows), `edit`, `write`, `grep`, `find`, `ls`
 
 ### Resource Options
 
@@ -594,6 +614,7 @@ Combine `--no-*` with explicit flags to load exactly what you need, ignoring set
 | `--verbose` | Force verbose startup |
 | `-a`, `--approve` | Trust project-local files for this run |
 | `-na`, `--no-approve` | Ignore project-local files for this run |
+| `--` | Stop option parsing; remaining arguments are prompts or `@file` inputs |
 | `-h`, `--help` | Show help |
 | `-v`, `--version` | Show version |
 
@@ -615,6 +636,9 @@ pi "List all .ts files in src/"
 
 # Non-interactive
 pi -p "Summarize this codebase"
+
+# Prompt beginning with a dash
+pi -p -- "- Summarize these points"
 
 # Non-interactive with piped stdin
 cat README.md | pi -p "Summarize this text"
@@ -650,19 +674,16 @@ pi --thinking high "Solve this complex problem"
 |----------|-------------|
 | `AI_AGENT` | Set to `pi` by the CLI and RPC entry points so generic tooling can attribute child processes to Pi |
 | `PI_CODING_AGENT` | Set to `true` by the CLI and RPC entry points so child processes can detect that they run inside Pi |
-| `TONANY_CODING_AGENT_DIR` | Override config directory (default: `~/.tonany/agent`) |
-| `TONANY_CODING_AGENT_SESSION_DIR` | Override session storage directory (overridden by `--session-dir`) |
+| `PI_CODING_AGENT_DIR` | Override config directory (default: `~/.tonany/agent`) |
+| `PI_CODING_AGENT_SESSION_DIR` | Override session storage directory (overridden by `--session-dir`) |
 | `PI_PACKAGE_DIR` | Override package directory (useful for Nix/Guix where store paths tokenize poorly) |
-| `PI_OFFLINE` | Disable startup network operations |
-| `PI_SKIP_VERSION_CHECK` | Skip version check when `PI_LATEST_VERSION_URL` is configured |
-| `PI_LATEST_VERSION_URL` | Optional self-hosted latest-version endpoint (unset = no check) |
-| `PI_REPORT_INSTALL_URL` | Optional self-hosted install ping endpoint |
-| `PI_MODEL_CATALOG_URL` | Optional remote model catalog base URL |
-| `PI_TELEMETRY` | Override install telemetry / attribution headers (`1` enable, `0` disable) |
+| `PI_OFFLINE` | Disable startup network operations, including update checks, package update checks, and install/update telemetry |
+| `PI_SKIP_VERSION_CHECK` | Skip the Pi version update check at startup. This prevents the `pi.dev` latest-version request |
+| `PI_TELEMETRY` | Override install/update telemetry and provider attribution headers. Use `1`/`true`/`yes` to enable or `0`/`false`/`no` to disable. This does not disable update checks |
 | `PI_CACHE_RETENTION` | Set to `long` for extended prompt cache (Anthropic: 1h, OpenAI: 24h) |
 | `VISUAL`, `EDITOR` | Fallback external editor for Ctrl+G when `externalEditor` is unset; defaults to Notepad on Windows and `nano` elsewhere |
 
-Commands run by the LLM-callable bash tool also receive current session metadata:
+Commands run by the LLM-callable `bash` and `powershell` tools also receive current session metadata:
 
 | Variable | Description |
 |----------|-------------|
@@ -672,7 +693,7 @@ Commands run by the LLM-callable bash tool also receive current session metadata
 | `PI_MODEL` | Currently selected model ID |
 | `PI_REASONING_LEVEL` | Current effective reasoning level |
 
-These values are resolved when each command starts. See [Environment Variables](docs/environment-variables.md#bash-tool-session-environment) for semantics, examples, and custom-tool opt-out.
+These values are resolved when each command starts. See [Environment Variables](docs/environment-variables.md#shell-tool-session-environment) for semantics, examples, and custom-tool opt-out.
 
 ---
 
@@ -684,13 +705,14 @@ See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines and [docs/developmen
 
 MIT
 
-## License
-
-MIT
-
 ## See Also
 
-- [@tonany/pi-ai](../ai): Core LLM toolkit
-- [@tonany/pi-agent-core](../agent): Agent framework
-- [@tonany/pi-tui](../tui): Terminal UI components
-- [ton](https://github.com/toninfo/ton) · [TonWorker](https://github.com/toninfo/tonworker)
+- [@tonany/pi-ai](https://www.npmjs.com/package/@tonany/pi-ai): Core LLM toolkit
+- [@tonany/pi-agent-core](https://www.npmjs.com/package/@tonany/pi-agent-core): Agent framework
+- [@tonany/pi-tui](https://www.npmjs.com/package/@tonany/pi-tui): Terminal UI components
+
+<p align="center">
+  <a href="https://pi.dev">pi.dev</a> domain graciously donated by
+  <br /><br />
+  <a href="https://exe.dev"><img src="docs/images/exy.png" alt="Exy mascot" width="48" /><br />exe.dev</a>
+</p>
