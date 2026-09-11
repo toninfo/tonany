@@ -92,8 +92,7 @@ export async function persistEvalArtifactReferences(
 	const references: Array<{ name: string; path: string }> = [];
 	for (const artifact of artifacts) {
 		if (
-			(artifact.type !== "@tonany/pi-evals:session" &&
-				artifact.type !== "@tonany/pi-evals:source") ||
+			(artifact.type !== "@tonany/pi-evals:session" && artifact.type !== "@tonany/pi-evals:source") ||
 			artifact.runId !== runId
 		) {
 			continue;

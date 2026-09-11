@@ -42,7 +42,6 @@ describe("version checks", () => {
 		expect(isNewerPackageVersion("0.70.6", "0.70.5")).toBe(true);
 	});
 
-	
 	it("skips network when no version check url is configured", async () => {
 		delete process.env.PI_LATEST_VERSION_URL;
 		const fetchMock = vi.fn();
