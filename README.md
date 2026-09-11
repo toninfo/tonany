@@ -54,6 +54,26 @@
 
 模型访问权属于你：订阅 `/login`，或环境变量 / `auth.json` 里的 API key。内置多厂商目录（Anthropic、OpenAI、Gemini、DeepSeek、OpenRouter、Ollama 兼容等）。详见 [packages/coding-agent/docs/providers.md](packages/coding-agent/docs/providers.md)。
 
+## 安装
+
+前置：无。预编译二进制不依赖本机 Node。
+
+**Windows（推荐）：**
+
+```powershell
+irm https://raw.githubusercontent.com/toninfo/tonany/main/install.ps1 | iex
+tonany
+```
+
+**Linux / macOS：**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/toninfo/tonany/main/install.sh | bash
+tonany
+```
+
+指定版本：`TONANY_VERSION=v0.85.2`（bash）或 `irm ... | iex` 前设 `$env:TONANY_VERSION='v0.85.2'`。
+
 ## 从源码运行
 
 前置：**Node.js ≥ 22.19**。
