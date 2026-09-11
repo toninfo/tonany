@@ -78,9 +78,11 @@ function assertPackagesAreRegisteredWithNpm() {
 	}
 
 	if (unregisteredPackages.length > 0) {
-		const usesTonanyScope = packageNames.every((name) => name.startsWith("@tonany/"));
-		if (usesTonanyScope) {
-			console.log("  Skipping npm registration check for @tonany/* packages (private TonAny release).\n");
+		// TonAny ships GitHub-only binaries; @tonany/* is never registered on npm.
+		// @earendil-works/chord stays an external dep and may already be on the registry.
+		const onlyTonanyUnregistered = unregisteredPackages.every((name) => name.startsWith("@tonany/"));
+		if (onlyTonanyUnregistered) {
+			console.log("  Skipping npm registration check for unregistered @tonany/* packages (GitHub-only TonAny release).\n");
 			return;
 		}
 		throw new Error(`The following public workspace packages are not registered on npm:\n${unregisteredPackages.map((packageName) => `  ${packageName}`).join("\n")}\nRegister them before running a release.`);
