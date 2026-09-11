@@ -1,9 +1,46 @@
 import { resetCapabilitiesCache, setCapabilities } from "@tonany/pi-tui";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { highlightCode, initTheme } from "../src/modes/interactive/theme/theme.ts";
-import { highlight, renderHighlightedHtml, supportsLanguage } from "../src/utils/syntax-highlight.ts";
+import {
+	highlight,
+	loadAllHighlightLanguages,
+	renderHighlightedHtml,
+	supportsLanguage,
+} from "../src/utils/syntax-highlight.ts";
+
+const eagerLanguages = [
+	"python",
+	"java",
+	"go",
+	"javascript",
+	"cpp",
+	"typescript",
+	"php",
+	"ruby",
+	"c",
+	"csharp",
+	"nix",
+	"bash",
+	"rust",
+	"scala",
+	"kotlin",
+	"swift",
+	"dart",
+	"groovy",
+	"perl",
+	"lua",
+];
+const eagerLanguagesLoadedAtStartup = eagerLanguages.every(supportsLanguage);
+const uncommonLanguageLoadedAtStartup = supportsLanguage("ada");
 
 describe("syntax highlight renderer", () => {
+	it("loads the twenty most common languages at startup and defers the rest", async () => {
+		expect(eagerLanguagesLoadedAtStartup).toBe(true);
+		expect(uncommonLanguageLoadedAtStartup).toBe(false);
+		await loadAllHighlightLanguages();
+		expect(supportsLanguage("ada")).toBe(true);
+	});
+
 	it("renders highlighted spans with the provided theme", () => {
 		const rendered = renderHighlightedHtml('<span class="hljs-keyword">const</span> value', {
 			keyword: (text) => `[keyword:${text}]`,
@@ -62,7 +99,7 @@ describe("theme syntax highlighting", () => {
 	it("colors diff additions and deletions in fenced diff blocks", () => {
 		const lines = highlightCode("-old\n+new\n", "diff");
 
-		expect(lines[0]).toBe("\x1b[38;2;255;71;86m-old\x1b[39m");
+		expect(lines[0]).toBe("\x1b[38;2;204;102;102m-old\x1b[39m");
 		expect(lines[1]).toBe("\x1b[38;2;181;189;104m+new\x1b[39m");
 	});
 

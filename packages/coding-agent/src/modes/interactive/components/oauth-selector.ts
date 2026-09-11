@@ -1,5 +1,13 @@
 import type { ApiKeyAuth, AuthCheck, OAuthAuth } from "@tonany/pi-ai";
-import { Container, type Focusable, fuzzyFilter, getKeybindings, Input, Spacer, TruncatedText } from "@tonany/pi-tui";
+import {
+	Container,
+	type Focusable,
+	fuzzyFilter,
+	getKeybindings,
+	Input,
+	Spacer,
+	TruncatedText,
+} from "@tonany/pi-tui";
 import { theme } from "../theme/theme.ts";
 import { DynamicBorder } from "./dynamic-border.ts";
 

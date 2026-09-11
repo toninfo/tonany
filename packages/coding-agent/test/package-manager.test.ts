@@ -142,7 +142,7 @@ Content`,
 			expect(result.skills.some((r) => r.path === skillFile && r.enabled)).toBe(true);
 		});
 
-		it("should auto-discover root markdown skills from .tonany skill dirs", async () => {
+		it("should auto-discover root markdown skills from .pi skill dirs", async () => {
 			const skillFile = join(agentDir, "skills", "single-file.md");
 			mkdirSync(join(agentDir, "skills"), { recursive: true });
 			writeFileSync(
@@ -158,7 +158,7 @@ Content`,
 			expect(result.skills.some((r) => r.path === skillFile && r.enabled)).toBe(true);
 		});
 
-		it("should resolve project paths relative to .tonany", async () => {
+		it("should resolve project paths relative to .pi", async () => {
 			const extDir = join(tempDir, ".tonany", "extensions");
 			mkdirSync(extDir, { recursive: true });
 			const extPath = join(extDir, "project-ext.ts");
@@ -298,7 +298,7 @@ Content`,
 	});
 
 	describe("auto-discovered skill metadata", () => {
-		it("should use the agent dir as baseDir for user .tonany/agent skills", async () => {
+		it("should use the agent dir as baseDir for user .pi/agent skills", async () => {
 			const skillPath = join(agentDir, "skills", "user-pi", "SKILL.md");
 			mkdirSync(join(agentDir, "skills", "user-pi"), { recursive: true });
 			writeFileSync(skillPath, "---\nname: user-pi\ndescription: user pi\n---\n");
@@ -311,7 +311,7 @@ Content`,
 			expect(skill?.metadata.baseDir).toBe(agentDir);
 		});
 
-		it("should use the project .tonany dir as baseDir for project .tonany skills", async () => {
+		it("should use the project .pi dir as baseDir for project .pi skills", async () => {
 			const projectBaseDir = join(tempDir, ".tonany");
 			const skillPath = join(projectBaseDir, "skills", "project-pi", "SKILL.md");
 			mkdirSync(join(projectBaseDir, "skills", "project-pi"), { recursive: true });
@@ -555,8 +555,8 @@ Content`,
 			expect(result.skills.some((r) => r.path.includes("venv") && r.enabled)).toBe(false);
 		});
 
-		it("should not apply parent .gitignore to .tonany auto-discovery", async () => {
-			writeFileSync(join(tempDir, ".gitignore"), ".tonany\n");
+		it("should not apply parent .gitignore to .pi auto-discovery", async () => {
+			writeFileSync(join(tempDir, ".gitignore"), ".pi\n");
 
 			const skillDir = join(tempDir, ".tonany", "skills", "auto-skill");
 			mkdirSync(skillDir, { recursive: true });
@@ -687,7 +687,7 @@ Content`,
 			const managerWithInternals = packageManager as unknown as {
 				runCommandSync(command: string, args: string[]): string;
 			};
-			const valueWithSpace = "C:\\Users\\A B\\.tonany\\npm";
+			const valueWithSpace = "C:\\Users\\A B\\.pi\\npm";
 			const output = managerWithInternals.runCommandSync(process.execPath, [
 				"-e",
 				"console.log(process.argv[1])",
@@ -1316,7 +1316,7 @@ Content`,
 			expect(settings.packages?.[0]).toBe(expected);
 		});
 
-		it("should store project local packages relative to .tonany settings base", () => {
+		it("should store project local packages relative to .pi settings base", () => {
 			const projectPkgDir = join(tempDir, "project-local-pkg");
 			mkdirSync(join(projectPkgDir, "extensions"), { recursive: true });
 			writeFileSync(join(projectPkgDir, "extensions", "index.ts"), "export default function() {}");
@@ -1646,6 +1646,60 @@ Content`,
 			const result = await packageManager.resolveExtensionSources([pkgDir]);
 			expect(result.skills.some((r) => isEnabled(r, "pdf-to-markdown", "includes"))).toBe(true);
 			expect(result.skills.some((r) => isEnabled(r, "document-processor-api", "includes"))).toBe(true);
+		});
+
+		it("should sort manifest glob matches and use exact entries for dot paths and symlink traversal", async () => {
+			const pkgDir = join(tempDir, "manifest-glob-semantics-pkg");
+			const extensionFilesDir = join(pkgDir, "extension-files");
+			const extensionGroupDir = join(pkgDir, "extension-groups", "group");
+			const linkedPluginSource = join(pkgDir, "linked-plugin-source");
+			mkdirSync(join(extensionFilesDir, "nested"), { recursive: true });
+			mkdirSync(extensionGroupDir, { recursive: true });
+			mkdirSync(join(pkgDir, "plugins", "local", "skills", "local-skill"), { recursive: true });
+			mkdirSync(join(linkedPluginSource, "skills", "linked-skill"), { recursive: true });
+			writeFileSync(join(extensionFilesDir, "z.ts"), "export default function() {}");
+			writeFileSync(join(extensionFilesDir, "a.ts"), "export default function() {}");
+			writeFileSync(join(extensionFilesDir, ".ignored.ts"), "export default function() {}");
+			writeFileSync(join(extensionFilesDir, "nested", ".hidden.ts"), "export default function() {}");
+			writeFileSync(join(extensionGroupDir, "index.ts"), "export default function() {}");
+			writeFileSync(
+				join(pkgDir, "plugins", "local", "skills", "local-skill", "SKILL.md"),
+				"---\nname: local-skill\ndescription: Local\n---\n",
+			);
+			writeFileSync(
+				join(linkedPluginSource, "skills", "linked-skill", "SKILL.md"),
+				"---\nname: linked-skill\ndescription: Linked\n---\n",
+			);
+			symlinkSync(
+				linkedPluginSource,
+				join(pkgDir, "plugins", "linked"),
+				process.platform === "win32" ? "junction" : "dir",
+			);
+			writeFileSync(
+				join(pkgDir, "package.json"),
+				JSON.stringify({
+					name: "manifest-glob-semantics-pkg",
+					pi: {
+						extensions: [
+							"./extension-files/*.ts",
+							"./extension-files/**/.ignored.ts",
+							"./extension-files/nested/.hidden.ts",
+							"./extension-groups/*/",
+						],
+						skills: ["./plugins/*/skills", "./plugins/linked/skills"],
+					},
+				}),
+			);
+
+			const result = await packageManager.resolveExtensionSources([pkgDir]);
+			expect(result.extensions.map((resource) => relative(pkgDir, resource.path))).toEqual([
+				join("extension-files", "a.ts"),
+				join("extension-files", "z.ts"),
+				join("extension-files", "nested", ".hidden.ts"),
+				join("extension-groups", "group", "index.ts"),
+			]);
+			expect(result.skills.some((resource) => pathEndsWith(resource.path, "local-skill/SKILL.md"))).toBe(true);
+			expect(result.skills.some((resource) => pathEndsWith(resource.path, "linked-skill/SKILL.md"))).toBe(true);
 		});
 	});
 

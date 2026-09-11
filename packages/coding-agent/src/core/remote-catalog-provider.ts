@@ -4,13 +4,13 @@ import { fetchWithRetry } from "../utils/management-http.ts";
 import { getPiUserAgent } from "../utils/pi-user-agent.ts";
 
 const DEFAULT_CATALOG_BASE_URL = "";
-const REMOTE_CATALOG_ATTEMPT_TIMEOUT_MS = 4_000;
-export const REMOTE_CATALOG_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
 /** tonany：远程目录基址，默认空；可用 PI_MODEL_CATALOG_URL 覆盖。 */
 export function getDefaultCatalogBaseUrl(): string {
 	return process.env.PI_MODEL_CATALOG_URL?.trim() || DEFAULT_CATALOG_BASE_URL;
 }
+const REMOTE_CATALOG_ATTEMPT_TIMEOUT_MS = 4_000;
+export const REMOTE_CATALOG_REFRESH_INTERVAL_MS = 4 * 60 * 60 * 1000;
 
 function mergeModels(baseline: readonly Model<Api>[], dynamic: readonly Model<Api>[]): Model<Api>[] {
 	const merged = [...baseline];

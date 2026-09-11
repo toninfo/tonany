@@ -11,11 +11,10 @@ import { allowNetwork } from "./test-network-env.ts";
 
 const originalSkipVersionCheck = process.env.PI_SKIP_VERSION_CHECK;
 const originalLatestVersionUrl = process.env.PI_LATEST_VERSION_URL;
-const TEST_VERSION_URL = "https://example.test/api/latest-version";
+const TEST_VERSION_URL = "https://example.test/latest-version";
 
 beforeEach(() => {
 	allowNetwork();
-	// tonany：版本检查默认关闭，测试里显式挂自建端点
 	process.env.PI_LATEST_VERSION_URL = TEST_VERSION_URL;
 });
 
@@ -43,6 +42,15 @@ describe("version checks", () => {
 		expect(isNewerPackageVersion("0.70.6", "0.70.5")).toBe(true);
 	});
 
+	
+	it("skips network when no version check url is configured", async () => {
+		delete process.env.PI_LATEST_VERSION_URL;
+		const fetchMock = vi.fn();
+		vi.stubGlobal("fetch", fetchMock);
+		await expect(getLatestPiRelease("1.0.0")).resolves.toBeUndefined();
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
 	it("returns only newer versions", async () => {
 		const fetchMock = vi.fn(async () => Response.json({ version: "1.2.3" }));
 		vi.stubGlobal("fetch", fetchMock);
@@ -57,7 +65,7 @@ describe("version checks", () => {
 
 		await expect(getLatestPiVersion("1.2.3")).resolves.toBe("1.2.4");
 		expect(fetchMock).toHaveBeenCalledWith(
-			TEST_VERSION_URL,
+			"https://example.test/latest-version",
 			expect.objectContaining({
 				headers: expect.objectContaining({
 					"User-Agent": expect.stringMatching(/^pi\/1\.2\.3 /),
@@ -65,15 +73,6 @@ describe("version checks", () => {
 				}),
 			}),
 		);
-	});
-
-	it("skips network when no version check url is configured", async () => {
-		delete process.env.PI_LATEST_VERSION_URL;
-		const fetchMock = vi.fn();
-		vi.stubGlobal("fetch", fetchMock);
-
-		await expect(getLatestPiVersion("1.2.3")).resolves.toBeUndefined();
-		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
 	it("retries a transient version request when explicitly requested", async () => {

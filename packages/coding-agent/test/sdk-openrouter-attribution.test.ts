@@ -92,11 +92,8 @@ describe("createAgentSession provider attribution headers", () => {
 		} = {},
 	): Promise<ProviderHeaders | undefined> {
 		const settingsManager = SettingsManager.create(cwd, agentDir);
-		// tonany 默认关闭遥测；归因测试需显式打开，除非用例要求关闭
 		if (options.telemetryEnabled === false) {
 			settingsManager.setEnableInstallTelemetry(false);
-		} else {
-			settingsManager.setEnableInstallTelemetry(true);
 		}
 
 		const authStorage = AuthStorage.inMemory({
@@ -149,8 +146,8 @@ describe("createAgentSession provider attribution headers", () => {
 	it("adds default attribution headers for OpenRouter models", async () => {
 		const headers = await captureHeaders(createModel("openrouter", "https://openrouter.ai/api/v1"));
 
-		expect(headers?.["HTTP-Referer"]).toBe("https://github.com/toninfo/tonany");
-		expect(headers?.["X-OpenRouter-Title"]).toBe("tonany");
+		expect(headers?.["HTTP-Referer"]).toBe("https://pi.dev");
+		expect(headers?.["X-OpenRouter-Title"]).toBe("pi");
 		expect(headers?.["X-OpenRouter-Categories"]).toBe("cli-agent");
 	});
 
@@ -167,16 +164,16 @@ describe("createAgentSession provider attribution headers", () => {
 	it("adds attribution headers for custom providers routed through OpenRouter", async () => {
 		const headers = await captureHeaders(createModel("custom-openrouter", "https://openrouter.ai/api/v1"));
 
-		expect(headers?.["HTTP-Referer"]).toBe("https://github.com/toninfo/tonany");
-		expect(headers?.["X-OpenRouter-Title"]).toBe("tonany");
+		expect(headers?.["HTTP-Referer"]).toBe("https://pi.dev");
+		expect(headers?.["X-OpenRouter-Title"]).toBe("pi");
 		expect(headers?.["X-OpenRouter-Categories"]).toBe("cli-agent");
 	});
 
 	it("preserves legacy OpenRouter base URL substring attribution matching", async () => {
 		const headers = await captureHeaders(createModel("custom-openrouter", "not-a-url-openrouter.ai"));
 
-		expect(headers?.["HTTP-Referer"]).toBe("https://github.com/toninfo/tonany");
-		expect(headers?.["X-OpenRouter-Title"]).toBe("tonany");
+		expect(headers?.["HTTP-Referer"]).toBe("https://pi.dev");
+		expect(headers?.["X-OpenRouter-Title"]).toBe("pi");
 		expect(headers?.["X-OpenRouter-Categories"]).toBe("cli-agent");
 	});
 
@@ -234,7 +231,7 @@ describe("createAgentSession provider attribution headers", () => {
 			createModel("openrouter", "https://openrouter.ai/api/v1", "nvidia/nemotron-3-super-120b-a12b"),
 		);
 
-		expect(headers?.["HTTP-Referer"]).toBe("https://github.com/toninfo/tonany");
+		expect(headers?.["HTTP-Referer"]).toBe("https://pi.dev");
 		expect(headers?.["X-BILLING-INVOKE-ORIGIN"]).toBeUndefined();
 	});
 

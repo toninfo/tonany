@@ -6,12 +6,14 @@ import { CLOUDFLARE_AI_GATEWAY_MODELS } from "./cloudflare-ai-gateway.models.ts"
 import { cloudflareAIGatewayAuth } from "./cloudflare-auth.ts";
 import { cloudflareStreams } from "./cloudflare-stream.ts";
 
-export function cloudflareAIGatewayProvider(): Provider<
-	"anthropic-messages" | "openai-completions" | "openai-responses"
-> {
-	// 目录 JSON 当前可能没有 openai-completions 模型，但网关仍支持该 API；
-	// 显式泛型避免 createProvider 从 models 收窄后拒绝 api map 里的 key。
-	return createProvider<"anthropic-messages" | "openai-completions" | "openai-responses">({
+type CloudflareAIGatewayApi = "anthropic-messages" | "openai-completions" | "openai-responses";
+
+export function cloudflareAIGatewayProvider(): Provider<CloudflareAIGatewayApi> {
+	// The api map is pinned to all three APIs: models.dev's gateway catalog drops and
+	// restores `workers-ai/*` (openai-completions) entries over time, and inference from
+	// `models` alone would otherwise reject the openai-completions entry whenever the
+	// generated catalog happens to contain none.
+	return createProvider<CloudflareAIGatewayApi>({
 		id: "cloudflare-ai-gateway",
 		name: "Cloudflare AI Gateway",
 		auth: { apiKey: cloudflareAIGatewayAuth() },
