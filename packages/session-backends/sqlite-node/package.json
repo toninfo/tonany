@@ -1,6 +1,6 @@
 {
 	"name": "@tonany/pi-session-backend-sqlite-node",
-	"version": "0.85.1",
+	"version": "0.85.2",
 	"description": "Node sqlite session backend for @tonany/pi-agent-core sessions",
 	"type": "module",
 	"main": "./dist/index.js",
@@ -35,8 +35,8 @@
 		"node": ">=22.19.0"
 	},
 	"dependencies": {
-		"@tonany/pi-ai": "^0.85.1",
-		"@tonany/pi-agent-core": "^0.85.1"
+		"@tonany/pi-ai": "^0.85.2",
+		"@tonany/pi-agent-core": "^0.85.2"
 	},
 	"devDependencies": {
 		"@vitest/coverage-v8": "4.1.9",
