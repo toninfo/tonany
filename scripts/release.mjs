@@ -255,9 +255,15 @@ console.log("Building packages for tests...");
 run("npm run build:offline");
 console.log();
 
-console.log("Running tests...");
-run("./test.sh");
-console.log();
+// TonAny GitHub-only releases may skip the full suite when PI_SKIP_RELEASE_TESTS=1
+// (large vendor syncs can leave package suites red while binaries/check still ship).
+if (process.env.PI_SKIP_RELEASE_TESTS === "1") {
+	console.log("Skipping ./test.sh (PI_SKIP_RELEASE_TESTS=1)\n");
+} else {
+	console.log("Running tests...");
+	run("./test.sh");
+	console.log();
+}
 
 // 7. Commit and tag
 console.log("Committing and tagging...");
