@@ -54,6 +54,26 @@ More: [product line](docs/PRODUCT_LINE.md) · [roadmap](docs/ROADMAP.md) · [ven
 
 Model access is yours: `/login` for subscriptions, or API keys via env / `auth.json`. Built-in multi-provider catalogs (Anthropic, OpenAI, Gemini, DeepSeek, OpenRouter, Ollama-compatible, and more). See [packages/coding-agent/docs/providers.md](packages/coding-agent/docs/providers.md).
 
+## Install
+
+No Node required for the prebuilt binary.
+
+**Windows (recommended):**
+
+```powershell
+irm https://raw.githubusercontent.com/toninfo/tonany/main/install.ps1 | iex
+tonany
+```
+
+**Linux / macOS:**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/toninfo/tonany/main/install.sh | bash
+tonany
+```
+
+Pin a version with `TONANY_VERSION=v0.85.2` (bash) or `$env:TONANY_VERSION='v0.85.2'` before `iex`.
+
 ## Run from source
 
 Requires **Node.js ≥ 22.19**.
