@@ -8,7 +8,8 @@ import { fileURLToPath } from "node:url";
 import { getPublicWorkspacePackages } from "./release-packages.mjs";
 
 const codingAgentName = "@tonany/pi-coding-agent";
-const developmentPackages = new Set(["pi-client", "pi-protocol", "pi-server"].map((name) => `@earendil-works/${name}`));
+// TonAny 保留 pi-* 包名语义，但 scope 统一为 @tonany（GitHub-only，不上 npm @earendil-works）
+const developmentPackages = new Set(["pi-client", "pi-protocol", "pi-server"].map((name) => `@tonany/${name}`));
 
 function run(command, args, options = {}) {
 	console.log(`$ ${[command, ...args].join(" ")}`);
@@ -106,7 +107,7 @@ assert.equal(typeof createAgentSession, "function");
 assert.equal(typeof SessionManager.inMemory, "function");
 assert.equal(typeof ModelRuntime.create, "function");
 for (const name of ["pi-client", "pi-protocol", "pi-server"]) {
-  assert.throws(() => import.meta.resolve("@earendil-works/" + name), /Cannot find|cannot find/, name + " must not be installed");
+  assert.throws(() => import.meta.resolve("@tonany/" + name), /Cannot find|cannot find/, name + " must not be installed");
 }
 for (const subpath of ["/client", "/experimental/plugin"]) {
   assert.throws(() => import.meta.resolve("${codingAgentName}" + subpath), /not exported|not defined|Cannot find|cannot find/);
